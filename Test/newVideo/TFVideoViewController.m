@@ -88,15 +88,23 @@
     self.videoSizeMak = CGSizeMake(240, 320);
     
     self.ingest = [[TFIngest alloc]init];
+    
+    TFIngestConfiguration *model = [[TFIngestConfiguration alloc]init];
+    model.videoSize = self.videoSizeMak;
+    model.videoFrameRate = 24;
+    model.videoBitRate = 600*1024;
+    model.mirror = true;
+    model.videoSize = self.videoSizeMak;
+    model.currentDeviceType = AVCaptureDeviceTypeBuiltInWideAngleCamera;
+    model.currentPosition = AVCaptureDevicePositionFront;
+    
+    
+    
     //前置摄像头的本地预览锁定为水平翻转  默认 true
     self.ingest.frontCameraPreviewLockedToFlipHorizontally = false;
+    
     [self.ingest setSDKWithPreview:self.view2
-                      videoSize:self.videoSizeMak
-                 videoFrameRate:24
-                   videoBitRate:600*1024
-                     streamMode:TFStreamModeSrt mirror:true
-                 currentDeviceType:AVCaptureDeviceTypeBuiltInWideAngleCamera
-                   currentPosition:AVCaptureDevicePositionFront];
+                     configuration:model];
     
     //设置URL
     self.pushUrl = [self SRT_URL];

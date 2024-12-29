@@ -37,60 +37,35 @@ public class TFIngest: NSObject {
     let cropRectFilter = TFCropRectFilter()
     //格挡
     let cameraPicture = TFCameraPictureFilter()
-    
+    //配置
     var configuration = TFIngestConfiguration()
     
     //TODO: 根据配置初始化SDK-------------
     @objc public func setSDK(preview:TFDisplays,
-                             videoSize:CGSize,
-                             videoFrameRate:CGFloat,
-                             videoBitRate:Int,
-                             streamMode:TFStreamMode,
-                             mirror:Bool,
-                             currentDeviceType:AVCaptureDevice.DeviceType,
-                             currentPosition: AVCaptureDevice.Position)
+                             configuration:TFIngestConfiguration)
     {
         self.configurationSDK(preview: preview,
-                              videoSize: videoSize,
-                              videoFrameRate: videoFrameRate,
-                              videoBitRate: videoBitRate,
-                              streamMode: streamMode,
-                              mirror:mirror,
-                              currentDeviceType:currentDeviceType,
-                              currentPosition:currentPosition,
+                              configuration: configuration,
                               again:false,
                               temp_connected:false)
         //TODO: 捕捉设备方向的变化
-        NotificationCenter.default.addObserver(self, selector: #selector(on(_:)), name: UIDevice.orientationDidChangeNotification, object: nil)
+//        NotificationCenter.default.addObserver(self, selector: #selector(on(_:)), name: UIDevice.orientationDidChangeNotification, object: nil)
         //TODO: 监听 AVAudioSession 的中断通知
         NotificationCenter.default.addObserver(self, selector: #selector(didInterruptionNotification(_:)), name: AVAudioSession.interruptionNotification, object: nil)
         //TODO: 用于捕捉音频路由变化（如耳机插入、蓝牙设备连接等）
         NotificationCenter.default.addObserver(self, selector: #selector(didRouteChangeNotification(_:)), name: AVAudioSession.routeChangeNotification, object: nil)
     }
     func configurationSDK(preview:TFDisplays,
-                          videoSize:CGSize,
-                          videoFrameRate:CGFloat,
-                          videoBitRate:Int,
-                          streamMode:TFStreamMode,
-                          mirror:Bool,
-                          currentDeviceType:AVCaptureDevice.DeviceType,
-                          currentPosition:AVCaptureDevice.Position,
+                          configuration:TFIngestConfiguration,
                           again:Bool,
                           temp_connected:Bool,
                           callback: ((_ code: Int, _ msg: String) -> Void)? = nil)
     {
                   self.preview = preview
         preview.videoGravity = .resizeAspectFill
-        preference.streamMode2 = streamMode
+        preference.streamMode2 = configuration.streamMode
         
-        
-        configuration.videoSize = videoSize
-        configuration.videoBitRate = videoBitRate
-        configuration.videoFrameRate = videoFrameRate
-        configuration.mirror = mirror
-        configuration.currentDeviceType = currentDeviceType
-        configuration.currentPosition = currentPosition
-        
+    
         if self.mixer == nil {
             mixer = MediaMixer()
             
@@ -109,7 +84,7 @@ public class TFIngest: NSObject {
                 //裁剪
                 _ = await mixer.screen.registerVideoEffect(cropRectFilter)
                 cropRectFilter.isAvailable = true
-                cropRectFilter.videoSize = videoSize
+                cropRectFilter.videoSize = configuration.videoSize
                 //格挡
                 _ = await mixer.screen.registerVideoEffect(cameraPicture)
                 
@@ -136,7 +111,7 @@ public class TFIngest: NSObject {
                 await mixer.setVideoMixerSettings(videoMixerSettings)
                 
                 //screen 离屏渲染对象。
-                mixer.screen.size = videoSize
+                mixer.screen.size = configuration.videoSize
                 mixer.screen.backgroundColor = UIColor.black.cgColor
             }
             
@@ -152,12 +127,12 @@ public class TFIngest: NSObject {
 
             var videoSettings = await stream.videoSettings
             ///// 视频的码率，单位是 bps
-            videoSettings.bitRate = videoBitRate
+            videoSettings.bitRate = configuration.videoBitRate
             ///// /// 视频的分辨率，宽高务必设定为 2 的倍数，
-            videoSettings.videoSize = videoSize
+            videoSettings.videoSize = configuration.videoSize
             await stream.setVideoSettings(videoSettings)
             //视频的帧率
-             await mixer.setFrameRate(videoFrameRate)
+            await mixer.setFrameRate(configuration.videoFrameRate)
 
             //切换了推流类型
             if(temp_connected)
@@ -203,18 +178,18 @@ public class TFIngest: NSObject {
                     
                     if(self.isCamera)
                     {
-                        let device = AVCaptureDevice.default(currentDeviceType, for: .video, position:currentPosition)
+                        let device = AVCaptureDevice.default(configuration.currentDeviceType, for: .video, position:configuration.currentPosition)
                         
                         //track 是多个摄像头的下标
                         try? await mixer.attachVideo(device, track: 0){[weak self] videoUnit in
                             guard let `self` = self else { return }
-                            videoUnit.isVideoMirrored = mirror
-                            self.myVideoMirrored = mirror
+                            videoUnit.isVideoMirrored = configuration.mirror
+                            self.myVideoMirrored = configuration.mirror
                             
                             //记住  前摄像 or 后摄像头
-                            self.setPosition(position: currentPosition)
+                            self.setPosition(position: configuration.currentPosition)
                             //酵预览 镜像显示控制属性
-                            self.frontMirror(mirror)
+                            self.frontMirror(configuration.mirror)
                             
                           //倍放
                             guard let device = videoUnit.device else {
@@ -418,13 +393,7 @@ public class TFIngest: NSObject {
                  let startTime = DispatchTime.now()
 
                  self.configurationSDK(preview: preview,
-                                       videoSize: configuration.videoSize,
-                                       videoFrameRate: configuration.videoFrameRate,
-                                       videoBitRate: configuration.videoBitRate,
-                                       streamMode: streamMode,
-                                       mirror:configuration.mirror,
-                                       currentDeviceType: configuration.currentDeviceType,
-                                       currentPosition: configuration.currentPosition,
+                                       configuration:configuration,
                                        again:true,
                                        temp_connected:new_Connected) { code, msg in
                          let elapsedTime = DispatchTime.now().uptimeNanoseconds - startTime.uptimeNanoseconds
