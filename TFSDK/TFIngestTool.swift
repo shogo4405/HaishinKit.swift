@@ -318,4 +318,6 @@ public class TFIngestConfiguration: NSObject {
     @objc public var currentPosition:AVCaptureDevice.Position = .front
     //推流模式
     @objc public var streamMode:TFStreamMode = .rtmp
+    //摄像头输出方向
+    @objc public var videoOrientation: AVCaptureVideoOrientation = .portrait
 }

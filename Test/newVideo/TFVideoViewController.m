@@ -97,7 +97,7 @@
     model.videoSize = self.videoSizeMak;
     model.currentDeviceType = AVCaptureDeviceTypeBuiltInWideAngleCamera;
     model.currentPosition = AVCaptureDevicePositionFront;
-    
+    model.videoOrientation = AVCaptureVideoOrientationPortrait;
     
     
     //前置摄像头的本地预览锁定为水平翻转  默认 true
