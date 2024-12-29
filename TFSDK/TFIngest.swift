@@ -45,7 +45,33 @@ public class TFIngest: NSObject {
     let cameraPicture = TFCameraPictureFilter()
     
     //TODO: 根据配置初始化SDK-------------
-    func configurationSDK(view:TFDisplays,
+    @objc public func setSDK(preview:TFDisplays,
+                             videoSize:CGSize,
+                             videoFrameRate:CGFloat,
+                             videoBitRate:Int,
+                             streamMode:TFStreamMode,
+                             mirror:Bool,
+                             cameraType:AVCaptureDevice.DeviceType,
+                             position: AVCaptureDevice.Position)
+    {
+        self.configurationSDK(preview: preview,
+                              videoSize: videoSize,
+                              videoFrameRate: videoFrameRate,
+                              videoBitRate: videoBitRate,
+                              streamMode: streamMode,
+                              mirror:mirror,
+                              cameraType:cameraType,
+                              position:position,
+                              again:false,
+                              temp_connected:false)
+        //TODO: 捕捉设备方向的变化
+        NotificationCenter.default.addObserver(self, selector: #selector(on(_:)), name: UIDevice.orientationDidChangeNotification, object: nil)
+        //TODO: 监听 AVAudioSession 的中断通知
+        NotificationCenter.default.addObserver(self, selector: #selector(didInterruptionNotification(_:)), name: AVAudioSession.interruptionNotification, object: nil)
+        //TODO: 用于捕捉音频路由变化（如耳机插入、蓝牙设备连接等）
+        NotificationCenter.default.addObserver(self, selector: #selector(didRouteChangeNotification(_:)), name: AVAudioSession.routeChangeNotification, object: nil)
+    }
+    func configurationSDK(preview:TFDisplays,
                           videoSize:CGSize,
                           videoFrameRate:CGFloat,
                           videoBitRate:Int,
@@ -57,7 +83,7 @@ public class TFIngest: NSObject {
                           temp_connected:Bool,
                           callback: ((_ code: Int, _ msg: String) -> Void)? = nil)
     {
-                    preview = view
+                  self.preview = preview
                     videoSize2 = videoSize
                     videoBitRate2 = videoBitRate
                     /// 最大关键帧间隔，可设定为 fps 的2倍，影响一个 gop 的大小
@@ -124,7 +150,7 @@ public class TFIngest: NSObject {
             //配置录制
             await stream.addOutput(self.recorder)
             //配置视频预览容器
-            await stream.addOutput(view)
+            await stream.addOutput(preview)
 
             var videoSettings = await stream.videoSettings
             ///// 视频的码率，单位是 bps
@@ -217,32 +243,7 @@ public class TFIngest: NSObject {
             await mixer.setFrameRate(videoFrameRate)
         }
     }
-    @objc public func setSDK(view:TFDisplays,
-                             videoSize:CGSize,
-                             videoFrameRate:CGFloat,
-                             videoBitRate:Int,
-                             streamMode:TFStreamMode,
-                             mirror:Bool,
-                             cameraType:AVCaptureDevice.DeviceType,
-                             position: AVCaptureDevice.Position)
-    {
-        self.configurationSDK(view: view,
-                              videoSize: videoSize,
-                              videoFrameRate: videoFrameRate,
-                              videoBitRate: videoBitRate,
-                              streamMode: streamMode,
-                              mirror:mirror,
-                              cameraType:cameraType,
-                              position:position,
-                              again:false,
-                              temp_connected:false)
-        //TODO: 捕捉设备方向的变化
-        NotificationCenter.default.addObserver(self, selector: #selector(on(_:)), name: UIDevice.orientationDidChangeNotification, object: nil)
-        //TODO: 监听 AVAudioSession 的中断通知
-        NotificationCenter.default.addObserver(self, selector: #selector(didInterruptionNotification(_:)), name: AVAudioSession.interruptionNotification, object: nil)
-        //TODO: 用于捕捉音频路由变化（如耳机插入、蓝牙设备连接等）
-        NotificationCenter.default.addObserver(self, selector: #selector(didRouteChangeNotification(_:)), name: AVAudioSession.routeChangeNotification, object: nil)
-    }
+
     private var cancellable: AnyCancellable?
 
     //TODO: 捕捉设备方向的变化
@@ -418,7 +419,7 @@ public class TFIngest: NSObject {
                   }
                  let startTime = DispatchTime.now()
 
-                 self.configurationSDK(view: preview,
+                 self.configurationSDK(preview: preview,
                                        videoSize: videoSize2,
                                        videoFrameRate: videoFrameRate2,
                                        videoBitRate: videoBitRate2,

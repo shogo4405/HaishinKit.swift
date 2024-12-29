@@ -90,7 +90,7 @@
     self.ingest = [[TFIngest alloc]init];
     //前置摄像头的本地预览锁定为水平翻转  默认 true
     self.ingest.frontCameraPreviewLockedToFlipHorizontally = false;
-    [self.ingest setSDKWithView:self.view2
+    [self.ingest setSDKWithPreview:self.view2
                       videoSize:self.videoSizeMak
                  videoFrameRate:24
                    videoBitRate:600*1024
