@@ -95,8 +95,8 @@
                  videoFrameRate:24
                    videoBitRate:600*1024
                      streamMode:TFStreamModeSrt mirror:true
-                     cameraType:AVCaptureDeviceTypeBuiltInWideAngleCamera
-                       position:AVCaptureDevicePositionFront];
+                 currentDeviceType:AVCaptureDeviceTypeBuiltInWideAngleCamera
+                   currentPosition:AVCaptureDevicePositionFront];
     
     //设置URL
     self.pushUrl = [self SRT_URL];

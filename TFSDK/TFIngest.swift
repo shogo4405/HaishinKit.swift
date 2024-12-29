@@ -47,8 +47,8 @@ public class TFIngest: NSObject {
                              videoBitRate:Int,
                              streamMode:TFStreamMode,
                              mirror:Bool,
-                             cameraType:AVCaptureDevice.DeviceType,
-                             position: AVCaptureDevice.Position)
+                             currentDeviceType:AVCaptureDevice.DeviceType,
+                             currentPosition: AVCaptureDevice.Position)
     {
         self.configurationSDK(preview: preview,
                               videoSize: videoSize,
@@ -56,8 +56,8 @@ public class TFIngest: NSObject {
                               videoBitRate: videoBitRate,
                               streamMode: streamMode,
                               mirror:mirror,
-                              cameraType:cameraType,
-                              position:position,
+                              currentDeviceType:currentDeviceType,
+                              currentPosition:currentPosition,
                               again:false,
                               temp_connected:false)
         //TODO: 捕捉设备方向的变化
@@ -73,8 +73,8 @@ public class TFIngest: NSObject {
                           videoBitRate:Int,
                           streamMode:TFStreamMode,
                           mirror:Bool,
-                      cameraType:AVCaptureDevice.DeviceType,
-                          position:AVCaptureDevice.Position,
+                          currentDeviceType:AVCaptureDevice.DeviceType,
+                          currentPosition:AVCaptureDevice.Position,
                           again:Bool,
                           temp_connected:Bool,
                           callback: ((_ code: Int, _ msg: String) -> Void)? = nil)
@@ -88,8 +88,8 @@ public class TFIngest: NSObject {
         configuration.videoBitRate = videoBitRate
         configuration.videoFrameRate = videoFrameRate
         configuration.mirror = mirror
-        configuration.currentDeviceType = cameraType
-        configuration.currentPosition = position
+        configuration.currentDeviceType = currentDeviceType
+        configuration.currentPosition = currentPosition
         
         if self.mixer == nil {
             mixer = MediaMixer()
@@ -203,7 +203,7 @@ public class TFIngest: NSObject {
                     
                     if(self.isCamera)
                     {
-                        let device = AVCaptureDevice.default(cameraType, for: .video, position:position)
+                        let device = AVCaptureDevice.default(currentDeviceType, for: .video, position:currentPosition)
                         
                         //track 是多个摄像头的下标
                         try? await mixer.attachVideo(device, track: 0){[weak self] videoUnit in
@@ -212,11 +212,11 @@ public class TFIngest: NSObject {
                             self.myVideoMirrored = mirror
                             
                             //记住  前摄像 or 后摄像头
-                            self.setPosition(position: position)
+                            self.setPosition(position: currentPosition)
                             //酵预览 镜像显示控制属性
                             self.frontMirror(mirror)
                             
-//                            //倍放
+                          //倍放
                             guard let device = videoUnit.device else {
                                 return
                             }
@@ -423,8 +423,8 @@ public class TFIngest: NSObject {
                                        videoBitRate: configuration.videoBitRate,
                                        streamMode: streamMode,
                                        mirror:configuration.mirror,
-                                       cameraType: configuration.currentDeviceType,
-                                       position: configuration.currentPosition,
+                                       currentDeviceType: configuration.currentDeviceType,
+                                       currentPosition: configuration.currentPosition,
                                        again:true,
                                        temp_connected:new_Connected) { code, msg in
                          let elapsedTime = DispatchTime.now().uptimeNanoseconds - startTime.uptimeNanoseconds
