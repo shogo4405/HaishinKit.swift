@@ -618,7 +618,7 @@ public class TFIngest: NSObject {
         }
     }
     //TODO:  --------------------推送自定义图像--------------------
-    @objc public func pushVideo(_ pixelBuffer: CVPixelBuffer) {
+//    @objc public func pushVideo(_ pixelBuffer: CVPixelBuffer) {
         // 1. 检查 stream 是否存在，避免进入 Task 后再检查
 //        if self.preference.push_status == .publishing {
 //            Task {
@@ -639,7 +639,7 @@ public class TFIngest: NSObject {
 //            }
 //        }
 
-    }
+//    }
     //TODO: 重新配置视频分辨率
     @objc public func setVideoMixerSettings(videoSize:CGSize,
                                             videoFrameRate:CGFloat,
