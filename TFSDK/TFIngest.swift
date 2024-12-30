@@ -19,12 +19,8 @@ public class TFIngest: NSObject {
     @objc public var saveLocalVideoPath:URL?
     //预览视频
     var preview = TFDisplays(frame: .zero)
-    //镜像
-     var mirror2:Bool = true
-     let recorder = HKStreamRecorder()
-     public var videoSize2:CGSize = CGSize(width: 0, height: 0 )
-     public var videoBitRate2: Int = 0
-     public var videoFrameRate2: CGFloat = 0
+    let recorder = HKStreamRecorder()
+    
      private var mixer:MediaMixer? = nil
      private var myVideoMirrored:Bool = false
     //近 中  远 摄像头
@@ -44,6 +40,7 @@ public class TFIngest: NSObject {
     //格挡
     let cameraPicture = TFCameraPictureFilter()
     
+    let configuration = TFIngestConfiguration()
     //TODO: 根据配置初始化SDK-------------
     @objc public func setSDK(preview:TFDisplays,
                              videoSize:CGSize,
@@ -84,16 +81,19 @@ public class TFIngest: NSObject {
                           temp_connected:Bool,
                           callback: ((_ code: Int, _ msg: String) -> Void)? = nil)
     {
-                  self.preview = preview
-                    videoSize2 = videoSize
-                    videoBitRate2 = videoBitRate
-                    /// 最大关键帧间隔，可设定为 fps 的2倍，影响一个 gop 的大小
-                    videoFrameRate2 = videoFrameRate
-              preference.streamMode = streamMode
-                    preview.videoGravity = .resizeAspectFill
-                    mirror2 = mirror
-                    currentDeviceType = cameraType
-                    currentPosition = position
+              self.preview = preview
+
+            preference.streamMode = streamMode
+            preview.videoGravity = .resizeAspectFill
+            configuration.mirror = mirror
+            currentDeviceType = cameraType
+            currentPosition = position
+            configuration.videoSize = videoSize
+            configuration.videoBitRate = videoBitRate
+            configuration.videoFrameRate = videoFrameRate
+            configuration.mirror = mirror
+
+        
         if self.mixer == nil {
             mixer = MediaMixer()
             
@@ -415,11 +415,11 @@ public class TFIngest: NSObject {
                  let startTime = DispatchTime.now()
 
                  self.configurationSDK(preview: preview,
-                                       videoSize: videoSize2,
-                                       videoFrameRate: videoFrameRate2,
-                                       videoBitRate: videoBitRate2,
+                                       videoSize: configuration.videoSize,
+                                       videoFrameRate: configuration.videoFrameRate,
+                                       videoBitRate: configuration.videoBitRate,
                                        streamMode: streamMode,
-                                       mirror:self.mirror2,
+                                       mirror:configuration.mirror,
                                        cameraType: self.currentDeviceType,
                                        position: self.currentPosition,
                                        again:true,
@@ -602,7 +602,7 @@ public class TFIngest: NSObject {
                     
                 }
                 //视频的帧率
-                await mixer.setFrameRate(videoFrameRate2)
+                await mixer.setFrameRate(configuration.videoFrameRate)
             }else{
                 try? await mixer.attachVideo(nil, track: 0)
             
@@ -633,9 +633,9 @@ public class TFIngest: NSObject {
             await stream.setVideoSettings(videoSettings)
             //-----------------------------------------------------------------
             
-            videoFrameRate2 = videoFrameRate
-            videoBitRate2 = videoBitRate
-            videoSize2 = videoSize
+            configuration.videoFrameRate = videoFrameRate
+            configuration.videoBitRate = videoBitRate
+            configuration.videoSize = videoSize
             //裁剪
             cropRectFilter.videoSize = videoSize
             //格挡
