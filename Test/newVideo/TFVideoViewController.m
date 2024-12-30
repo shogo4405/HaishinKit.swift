@@ -8,6 +8,7 @@
 #import "TFVideoViewController.h"
 #import <AVFoundation/AVFoundation.h>
 #import "TFVideoViewTool.h"
+#define WeakSelf __weak typeof(self) weakSelf = self;
 @import TFSRT;
 @interface TFVideoViewController ()
 @property (nonatomic, strong) TFDisplays *view2;
@@ -21,6 +22,8 @@
 @property (nonatomic, assign)CGSize videoSizeMak;
 @property (nonatomic) CVPixelBufferRef cameraPicture;
 @property (nonatomic,strong) NSTimer *cameraTimer;
+
+@property (nonatomic,assign)BOOL isStartLive;
 @end
 
 @implementation TFVideoViewController
@@ -84,12 +87,10 @@
     [self view:self.view addButton:CGRectMake(rightX, 490, 100, 30) title:@"有音" action:@selector(mutedClick:) selected:0];
     [self view:self.view addButton:CGRectMake(0, 490, 100, 30) title:@"摄像头 开" action:@selector(cameraClick:) selected:1];
 
-    [self view:self.view addButton:CGRectMake(0, 540, 200, 30) title:@"CGSizeMake(240, 320)" action:@selector(sizeMakeClick:) selected:1];
-    self.videoSizeMak = CGSizeMake(240, 320);
+    [self view:self.view addButton:CGRectMake(0, 540, 200, 30) title:@"CGSizeMake(540, 960)" action:@selector(sizeMakeClick:) selected:1];
+    self.videoSizeMak = CGSizeMake(540, 960);
     
-//    self.videoSizeMak = CGSizeMake(180, 320);
-    
-    
+
     self.ingest = [[TFIngest alloc]init];
     //前置摄像头的本地预览锁定为水平翻转  默认 true
     self.ingest.frontCameraPreviewLockedToFlipHorizontally = false;
@@ -148,53 +149,7 @@
     }
     
 }
-- (void)stopCameraPictureTimer {
-    if(_cameraTimer){
-        [_cameraTimer invalidate];
-        _cameraTimer = nil;
-    }
-}
-- (void)startCameraPicutreTimer {
-    if(!_cameraTimer){
-        //推送背景图
-        _cameraTimer = [NSTimer timerWithTimeInterval:1 target:self selector:@selector(cameraPictureHandler) userInfo:nil repeats:YES];
-        [[NSRunLoop mainRunLoop] addTimer:_cameraTimer forMode:NSRunLoopCommonModes];
-    }
-}
-- (void)cameraPictureHandler
-{
-//    [self.ingest pushVideo:[self cameraPicture] ];
-}
-- (CVPixelBufferRef)cameraPicture {
-    if(_cameraPicture == nil){
-        NSString *pictureFile = [NSString stringWithFormat:@"TalkfunLive.bundle/camera_%ldx%ld.png",(long)self.videoSizeMak.width,(long)self.videoSizeMak.height];
-        
-        if(![[NSFileManager defaultManager]fileExistsAtPath:pictureFile]){
-            pictureFile = [NSString stringWithFormat:@"TalkfunLive.bundle/camera_%dx%d.png",320,240];
-        }
-        
-        UIImage* myImage = [UIImage imageNamed:pictureFile];
-        
-        if(myImage ==nil){
-        
-            NSString *pictureFile = [NSString stringWithFormat:@"CloudLiveSDKFramework.bundle/camera_%ldx%ld.png",(long)self.videoSizeMak.width,(long)self.videoSizeMak.height];
-            
-            if(![[NSFileManager defaultManager]fileExistsAtPath:pictureFile]){
-                pictureFile = [NSString stringWithFormat:@"CloudLiveSDKFramework.bundle/camera_%dx%d.png",320,240];
-                myImage = [UIImage imageNamed:pictureFile];
-                
-    
-            }
 
-        }
-        if (myImage) {
-            CGImageRef imageRef = [myImage CGImage];
-            _cameraPicture = [TFVideoViewTool pixelBufferFromCGImage:imageRef];
-        }
-       
-    }
-    return _cameraPicture;
-}
 
 - (void)mutedClick:(UIButton*)btn
 {
@@ -487,7 +442,17 @@
         [self.streamBtn setTitle:@"SRT推流" forState:UIControlStateNormal];
         self.pushUrl = [self SRT_URL];
     }
-    [self.ingest renewWithStreamMode:model pushUrl:self.pushUrl callback:^(NSInteger code, NSString * _Nonnull msg) {
+    
+    
+    [self.ingest renewWithStreamMode:model
+                             pushUrl:self.pushUrl
+                           startLive:self.isStartLive callback:^(NSInteger code, NSString * _Nonnull msg) {
+        
+        if (code==0) {
+            NSLog(@"切换推流模式成功=======>");
+        }else{
+            NSLog(@"切换推流模式失败=======>");
+        }
         
     }];
 }
@@ -496,12 +461,14 @@
 {
     if (btn.selected == false ) {
         NSLog(@"开始推流self.pushUrl=====>%@",self.pushUrl);
+         WeakSelf
         [self.ingest startLiveWithUrl:self.pushUrl callback:^(NSInteger code, NSString * msg) {
 
             if (code==0) {
                 [btn setTitle:@"停止推流" forState:UIControlStateNormal];
                 btn.selected = true;
                 NSLog(@"推流成功=======>");
+                weakSelf.isStartLive = true;
             }else{
                 NSLog(@"推流失败=======>");
             }
@@ -512,6 +479,7 @@
         [btn setTitle:@"开始推流" forState:UIControlStateNormal];
         btn.selected = false;
         NSLog(@"停止推流=======>");
+        self.isStartLive = false;
    }
     
 }
@@ -523,7 +491,6 @@
 {
     return @"srt://live-push-15.talk-fun.com:9000?streamid=#!::h=live-push-15.talk-fun.com,r=live/24827_JCMnJSAnSCshLC4vKClAEA,txSecret=f712e3d25f21774150ae9d5b4b2a4760,txTime=67736838";
 }
-
 
 - (void)dealloc{
     NSLog(@"控制器销毁==========>");

@@ -104,10 +104,10 @@ public class TFStreamPreference: NSObject {
 
                             switch newState {
                             case .idle:
-//                                print("srt流处于空闲状态。")
+                                print("srt流处于空闲状态。")
                                 self.isConnected = false
                             case .publishing:
-//                                print("srt流正在发布中")
+                                print("srt流正在发布中")
                                  status = .publishing
                                 self.isConnected = true
                             case .playing:
@@ -141,10 +141,10 @@ public class TFStreamPreference: NSObject {
                             self.statusChanged(status: status)
                             switch newState {
                             case .idle:
-//                                print("rtmp流处于空闲状态。")
+                                print("rtmp流处于空闲状态。")
                                 self.isConnected = false
                             case .publishing:
-//                                print("rtmp流正在发布中")
+                                print("rtmp流正在发布中")
                                  status = .publishing
                                 self.isConnected = true
                             case .playing:

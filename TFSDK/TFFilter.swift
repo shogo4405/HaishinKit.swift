@@ -125,7 +125,7 @@ class TFCropRectFilter: TFFilter {
                 
                 
                 let height = originalSize.width*(videoSize.width/videoSize.height)
-                let cropRectY =  (originalSize.height-height)/2
+//                let cropRectY =  (originalSize.height-height)/2
                 let cropRect = CGRect(
                     x: 0,
                     y: 0,

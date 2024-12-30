@@ -23,10 +23,6 @@ public class TFIngest: NSObject {
     
      private var mixer:MediaMixer? = nil
      private var myVideoMirrored:Bool = false
-    //近 中  远 摄像头
-    var currentDeviceType:AVCaptureDevice.DeviceType = .builtInWideAngleCamera
-    // 前后摄像头
-    var currentPosition: AVCaptureDevice.Position = .front
     
     var pushUrl:String = ""
     @objc public let preference = TFStreamPreference()
@@ -61,7 +57,7 @@ public class TFIngest: NSObject {
                               cameraType:cameraType,
                               position:position,
                               again:false,
-                              temp_connected:false,
+                              startLive:false,
                               outputImageOrientation:outputImageOrientation)
         //TODO: 捕捉设备方向的变化
 //        NotificationCenter.default.addObserver(self, selector: #selector(on(_:)), name: UIDevice.orientationDidChangeNotification, object: nil)
@@ -79,17 +75,17 @@ public class TFIngest: NSObject {
                       cameraType:AVCaptureDevice.DeviceType,
                           position:AVCaptureDevice.Position,
                           again:Bool,
-                          temp_connected:Bool,
+                          startLive:Bool,
                           outputImageOrientation: AVCaptureVideoOrientation,
                           callback: ((_ code: Int, _ msg: String) -> Void)? = nil)
     {
               self.preview = preview
-
+         configuration.streamMode = streamMode
             preference.streamMode = streamMode
             preview.videoGravity = .resizeAspectFill
             configuration.mirror = mirror
-            currentDeviceType = cameraType
-            currentPosition = position
+        configuration.currentDeviceType = cameraType
+        configuration.currentPosition = position
             configuration.videoSize = videoSize
             configuration.videoBitRate = videoBitRate
             configuration.videoFrameRate = videoFrameRate
@@ -128,12 +124,9 @@ public class TFIngest: NSObject {
                 return
             }
             if again==false {
-//                if let windowScene = await UIApplication.shared.connectedScenes.first as? UIWindowScene {
-//                    let orientation = await windowScene.interfaceOrientation
-//                    if let videoOrientation = DeviceUtil.videoOrientation(by: orientation) {
-                        await mixer.setVideoOrientation(outputImageOrientation)
-//                    }
-//                }
+
+                await mixer.setVideoOrientation(outputImageOrientation)
+
                 await mixer.setMonitoringEnabled(DeviceUtil.isHeadphoneConnected())
                 
                 var videoMixerSettings = await mixer.videoMixerSettings
@@ -165,14 +158,13 @@ public class TFIngest: NSObject {
              await mixer.setFrameRate(videoFrameRate)
 
             //切换了推流类型
-            if(temp_connected && self.pushUrl.count>0)
+            if(startLive && self.pushUrl.count>0)
             {
+                print("切换了推流类型,重新开始推流")
                     self.startLive(url: self.pushUrl) {[weak self] code, msg in
                         guard let `self` = self else { return }
                         self.preference.pause = false
-                        
                         self.preference.statusChanged(status: self.preference.push_status)
-                        
                         if callback != nil {
                             
                             callback!(code, msg)
@@ -309,7 +301,7 @@ public class TFIngest: NSObject {
         self.pushUrl = url
         Task {
             
-            if preference.streamMode == .rtmp {
+            if configuration.streamMode == .rtmp {
                   
                     do {
                     guard
@@ -344,7 +336,7 @@ public class TFIngest: NSObject {
                    
               
                 }
-            else  if preference.streamMode == .srt {
+            else  if configuration.streamMode == .srt {
               
                     do {
                         guard let stream = preference.stream() as? SRTStream else {
@@ -383,7 +375,10 @@ public class TFIngest: NSObject {
         }
     }
     //TODO: 切换推流类型
-    @objc public func renew(streamMode: TFStreamMode, pushUrl: String, callback: @escaping (_ code: Int, _ msg: String) -> Void)
+    @objc public func renew(streamMode: TFStreamMode,
+                            pushUrl: String,
+                            startLive:Bool,
+                            callback: @escaping (_ code: Int, _ msg: String) -> Void)
 
     {
         self.pushUrl = pushUrl
@@ -391,12 +386,14 @@ public class TFIngest: NSObject {
              guard let mixer = self.mixer else {
                  return
              }
-             if streamMode != preference.streamMode
+             if streamMode != configuration.streamMode
              {
+                
+                 configuration.streamMode = streamMode
                  preference.streamMode = streamMode
                  //暂时暂停回调直播状态
                  preference.pause = true
-                 let new_Connected = self.preference.isConnected
+                
          
                  preference.rtmpCancellable?.cancel()
                  preference.srtCancellable?.cancel()
@@ -414,18 +411,19 @@ public class TFIngest: NSObject {
                       await srtStream.close()
                       await mixer.removeOutput(srtStream)
                   }
+                 
+                 self.preference.isConnected = startLive
                  let startTime = DispatchTime.now()
-
                  self.configurationSDK(preview: preview,
                                        videoSize: configuration.videoSize,
                                        videoFrameRate: configuration.videoFrameRate,
                                        videoBitRate: configuration.videoBitRate,
                                        streamMode: streamMode,
                                        mirror:configuration.mirror,
-                                       cameraType: self.currentDeviceType,
-                                       position: self.currentPosition,
+                                       cameraType: configuration.currentDeviceType,
+                                       position: configuration.currentPosition,
                                        again:true,
-                                       temp_connected:new_Connected,
+                                       startLive:startLive,
                                        outputImageOrientation:configuration.outputImageOrientation) { code, msg in
                          let elapsedTime = DispatchTime.now().uptimeNanoseconds - startTime.uptimeNanoseconds
                          let elapsedSeconds = Double(elapsedTime) / 1_000_000_000.0
@@ -436,6 +434,7 @@ public class TFIngest: NSObject {
                          }
                      
                  }
+                 
              }
         
          }
@@ -456,7 +455,7 @@ public class TFIngest: NSObject {
                 try? await mixer.attachVideo(device, track: 0){[weak self] videoUnit in
                     guard let `self` = self else { return }
 
-                currentPosition = position
+                    configuration.currentPosition = position
                 self.setPosition(position: position)
                 if(position == .front)
                 {
@@ -468,7 +467,7 @@ public class TFIngest: NSObject {
              }
             }else
             {
-                currentPosition = position
+                configuration.currentPosition = position
             }
        
        }
@@ -488,8 +487,8 @@ public class TFIngest: NSObject {
                 try? await mixer.attachVideo(device, track: 0){[weak self] videoUnit in
                     guard let `self` = self else { return }
                     
-                    currentDeviceType = cameraType
-                     currentPosition = position
+                    configuration.currentDeviceType = cameraType
+                    configuration.currentPosition = position
                     
                     self.setPosition(position: position)
                     
@@ -504,8 +503,8 @@ public class TFIngest: NSObject {
             }else
             {
                 
-                currentDeviceType = cameraType
-                 currentPosition = position
+                configuration.currentDeviceType = cameraType
+                configuration.currentPosition = position
                 
             }
            
@@ -600,7 +599,7 @@ public class TFIngest: NSObject {
             }
             if(camera)
             {
-                let device = AVCaptureDevice.default(currentDeviceType, for: .video, position:currentPosition)
+                let device = AVCaptureDevice.default(configuration.currentDeviceType, for: .video, position:configuration.currentPosition)
                 try? await mixer.attachVideo(device, track: 0){ videoUnit in
                     
                 }
@@ -639,6 +638,8 @@ public class TFIngest: NSObject {
             configuration.videoFrameRate = videoFrameRate
             configuration.videoBitRate = videoBitRate
             configuration.videoSize = videoSize
+            
+            
             //裁剪
             cropRectFilter.videoSize = videoSize
             //格挡
