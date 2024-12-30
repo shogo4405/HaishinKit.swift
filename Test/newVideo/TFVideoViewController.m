@@ -84,7 +84,7 @@
     [self view:self.view addButton:CGRectMake(rightX, 490, 100, 30) title:@"有音" action:@selector(mutedClick:) selected:0];
     [self view:self.view addButton:CGRectMake(0, 490, 100, 30) title:@"摄像头 开" action:@selector(cameraClick:) selected:1];
 
-    [self view:self.view addButton:CGRectMake(0, 540, 200, 30) title:@"CGSizeMake(240, 320)" action:@selector(sizeMakeClick:) selected:1];
+    [self view:self.view addButton:CGRectMake(0, 540, 200, 30) title:@"CGSizeMake(540, 960)" action:@selector(sizeMakeClick:) selected:1];
     self.videoSizeMak = CGSizeMake(540, 960);
     
     self.ingest = [[TFIngest alloc]init];
