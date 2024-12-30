@@ -42,6 +42,7 @@ public class TFIngest: NSObject {
     @objc public func setSDK(preview:TFDisplays,
                              configuration:TFIngestConfiguration)
     {
+        preference.streamMode2 = configuration.streamMode
         self.configurationSDK(preview: preview,
                               configuration: configuration,
                               again:false,
@@ -59,11 +60,9 @@ public class TFIngest: NSObject {
                           temp_connected:Bool,
                           callback: ((_ code: Int, _ msg: String) -> Void)? = nil)
     {
-                  self.preview = preview
+        self.preview = preview
         preview.videoGravity = .resizeAspectFill
-        preference.streamMode2 = configuration.streamMode
-        
-    
+      
         if self.mixer == nil {
             mixer = MediaMixer()
             
@@ -369,6 +368,9 @@ public class TFIngest: NSObject {
              if streamMode != preference.streamMode2
              {
                  configuration.streamMode = streamMode
+                 preference.streamMode2 = streamMode
+                 
+                 
                  //暂时暂停回调直播状态
                  preference.pause = true
                  let new_Connected = self.preference.isConnected
