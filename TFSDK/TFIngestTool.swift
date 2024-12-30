@@ -303,21 +303,21 @@ extension Data {
         return chunks
     }
 }
-public class TFIngestConfiguration: NSObject {
-    /**视频的分辨率，宽高务必设定为 2 的倍数，否则解码播放时可能出现绿边(这个videoSizeRespectingAspectRatio设置为YES则可能会改变)*/ 
-    @objc public var videoSize:CGSize = .zero
-    /**视频的帧率，即 fps*/
-    @objc public var videoFrameRate:CGFloat = 0
-    /**视频的码率，单位是 bps*/
-    @objc public var videoBitRate:Int = 0
-    /**镜像*/
-    @objc public var mirror:Bool = false
-    /**近  中   远  摄像头*/
-    @objc public var currentDeviceType:AVCaptureDevice.DeviceType = .builtInWideAngleCamera
-    /***/
-    @objc public var currentPosition:AVCaptureDevice.Position = .front
-    /**推流模式*/
-    @objc public var streamMode:TFStreamMode = .rtmp
-    /**摄像头输出方向*/
-    @objc public var outputImageOrientation: AVCaptureVideoOrientation = .portrait
-}
+//public class TFIngestConfiguration: NSObject {
+//    /**视频的分辨率，宽高务必设定为 2 的倍数，否则解码播放时可能出现绿边(这个videoSizeRespectingAspectRatio设置为YES则可能会改变)*/
+//    @objc public var videoSize:CGSize = .zero
+//    /**视频的帧率，即 fps*/
+//    @objc public var videoFrameRate:CGFloat = 0
+//    /**视频的码率，单位是 bps*/
+//    @objc public var videoBitRate:Int = 0
+//    /**镜像*/
+//    @objc public var mirror:Bool = false
+//    /**近  中   远  摄像头*/
+//    @objc public var currentDeviceType:AVCaptureDevice.DeviceType = .builtInWideAngleCamera
+//    /***/
+//    @objc public var currentPosition:AVCaptureDevice.Position = .front
+//    /**推流模式*/
+//    @objc public var streamMode:TFStreamMode = .rtmp
+//    /**摄像头输出方向*/
+//    @objc public var outputImageOrientation: AVCaptureVideoOrientation = .portrait
+//}

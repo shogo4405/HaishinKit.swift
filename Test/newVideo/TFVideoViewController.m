@@ -38,7 +38,7 @@
     CGFloat rightX = self.view.frame.size.width-100;
     
     [self view:self.view addButton:CGRectMake(rightX, 50, 100, 30) title:@"退出" action:@selector(exitBtnClick:) selected:false];
-    self.streamBtn = [self view:self.view addButton:CGRectMake(0, 50, 100, 30) title:@"RTMP推流" action:@selector(streamClick:) selected:1];
+    self.streamBtn = [self view:self.view addButton:CGRectMake(0, 50, 100, 30) title:@"SRT推流" action:@selector(streamClick:) selected:1];
     self.streamBtn.selected = true;
     
     [self view:self.view addButton:CGRectMake(0, 100, 100, 30) title:@"开始推流" action:@selector(srtClick:) selected:false];
@@ -84,29 +84,27 @@
     [self view:self.view addButton:CGRectMake(rightX, 490, 100, 30) title:@"有音" action:@selector(mutedClick:) selected:0];
     [self view:self.view addButton:CGRectMake(0, 490, 100, 30) title:@"摄像头 开" action:@selector(cameraClick:) selected:1];
 
-    [self view:self.view addButton:CGRectMake(0, 540, 200, 30) title:@"CGSizeMake(540, 960)" action:@selector(sizeMakeClick:) selected:1];
-    self.videoSizeMak = CGSizeMake(540, 960);
+    [self view:self.view addButton:CGRectMake(0, 540, 200, 30) title:@"CGSizeMake(240, 320)" action:@selector(sizeMakeClick:) selected:1];
+    self.videoSizeMak = CGSizeMake(240, 320);
+    
+//    self.videoSizeMak = CGSizeMake(180, 320);
+    
     
     self.ingest = [[TFIngest alloc]init];
-    
-    TFIngestConfiguration *model = [[TFIngestConfiguration alloc]init];
-    model.videoSize = self.videoSizeMak;
-    model.videoFrameRate = 24;
-    model.videoBitRate = 600*1024;
-    model.mirror = true;
-    model.currentDeviceType = AVCaptureDeviceTypeBuiltInWideAngleCamera;
-    model.currentPosition = AVCaptureDevicePositionFront;
-    model.outputImageOrientation = AVCaptureVideoOrientationPortrait;
-    model.streamMode = TFStreamModeRtmp;
-    
     //前置摄像头的本地预览锁定为水平翻转  默认 true
     self.ingest.frontCameraPreviewLockedToFlipHorizontally = false;
-    
     [self.ingest setSDKWithPreview:self.view2
-                     configuration:model];
+                      videoSize:self.videoSizeMak
+                 videoFrameRate:24
+                   videoBitRate:600*1024
+                     streamMode:TFStreamModeSrt
+                            mirror:true
+                     cameraType:AVCaptureDeviceTypeBuiltInWideAngleCamera
+                          position:AVCaptureDevicePositionFront
+     outputImageOrientation:UIInterfaceOrientationPortrait];
     
     //设置URL
-    self.pushUrl = [self RTMP_URL];
+    self.pushUrl = [self SRT_URL];
 
 }
 - (void)sizeMakeClick:(UIButton*)btn
@@ -123,6 +121,9 @@
         self.videoSizeMak = CGSizeMake(240, 320);
         [btn setTitle:@"CGSizeMake(240, 320)" forState:UIControlStateNormal];
      
+        //会容易闪退
+//        [btn setTitle:@"CGSizeMake(180, 320)" forState:UIControlStateNormal];
+        
         [_ingest setVideoMixerSettingsWithVideoSize:CGSizeMake(240, 320)
                                          videoFrameRate:24
                                            videoBitRate:600*1024];
@@ -522,6 +523,8 @@
 {
     return @"srt://live-push-15.talk-fun.com:9000?streamid=#!::h=live-push-15.talk-fun.com,r=live/24827_JCMnJSAnSCshLC4vKClAEA,txSecret=f712e3d25f21774150ae9d5b4b2a4760,txTime=67736838";
 }
+
+
 - (void)dealloc{
     NSLog(@"控制器销毁==========>");
 }
