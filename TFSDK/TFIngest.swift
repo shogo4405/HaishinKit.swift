@@ -27,12 +27,10 @@ public class TFIngest: NSObject {
   
     var pushUrl:String = ""
     @objc public let preference = TFStreamPreference()
-    
     //美颜
     let beauty_effect = TFTFBeautyFilter()
     //水印
     let watermark_effect = TFWatermarkFilter()
-    
     //裁剪
     let cropRectFilter = TFCropRectFilter()
     //格挡
@@ -370,6 +368,7 @@ public class TFIngest: NSObject {
              }
              if streamMode != preference.streamMode2
              {
+                 configuration.streamMode = streamMode
                  //暂时暂停回调直播状态
                  preference.pause = true
                  let new_Connected = self.preference.isConnected
@@ -584,29 +583,6 @@ public class TFIngest: NSObject {
             isCamera = camera
         }
     }
-    //TODO:  --------------------推送自定义图像--------------------
-//    @objc public func pushVideo(_ pixelBuffer: CVPixelBuffer) {
-        // 1. 检查 stream 是否存在，避免进入 Task 后再检查
-//        if self.preference.push_status == .publishing {
-//            Task {
-//                do {
-//                    
-//                    // 2. 使用结构化的错误处理
-//                    let buffer = try await TFIngestTool.createSampleBuffer(from: pixelBuffer)
-//                    
-//                    print("推送自定义图像=======>")
-//                    guard let stream = self.preference.stream() else {
-//                        print("Stream not available")
-//                        return
-//                    }
-////                    await stream.append(buffer)
-//                } catch {
-//                    print("Failed to push video: \(error)")
-//                }
-//            }
-//        }
-
-//    }
     //TODO: 重新配置视频分辨率
     @objc public func setVideoMixerSettings(videoSize:CGSize,
                                             videoFrameRate:CGFloat,
