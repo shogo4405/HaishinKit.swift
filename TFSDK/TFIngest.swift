@@ -44,8 +44,8 @@ public class TFIngest: NSObject {
     {
         self.configurationSDK(preview: preview,
                               configuration: configuration,
-                              again:false,
-                              temp_connected:false)
+                              renew:false
+                    )
         //TODO: 捕捉设备方向的变化
 //        NotificationCenter.default.addObserver(self, selector: #selector(on(_:)), name: UIDevice.orientationDidChangeNotification, object: nil)
         //TODO: 监听 AVAudioSession 的中断通知
@@ -55,8 +55,7 @@ public class TFIngest: NSObject {
     }
     func configurationSDK(preview:TFDisplays,
                           configuration:TFIngestConfiguration,
-                          again:Bool,
-                          temp_connected:Bool,
+                          renew:Bool,
                           callback: ((_ code: Int, _ msg: String) -> Void)? = nil)
     {
         self.preview = preview
@@ -93,13 +92,10 @@ public class TFIngest: NSObject {
             guard let mixer = self.mixer else {
                 return
             }
-            if again==false {
-//                if let windowScene = await UIApplication.shared.connectedScenes.first as? UIWindowScene {
-//                    let orientation = await windowScene.interfaceOrientation
-//                    if let videoOrientation = DeviceUtil.videoOrientation(by: orientation) {
+            if renew==false {
+
                 await mixer.setVideoOrientation(configuration.outputImageOrientation)
-//                    }
-//                }
+
                 await mixer.setMonitoringEnabled(DeviceUtil.isHeadphoneConnected())
                 
                 var videoMixerSettings = await mixer.videoMixerSettings
@@ -112,10 +108,7 @@ public class TFIngest: NSObject {
             }
             
             //----------------
-            await preference.configuration(configuration.streamMode)
-            guard let stream = self.preference.stream else {
-                return
-            }
+            let stream = preference.configurationStreamMode(configuration.streamMode)
             await mixer.addOutput(stream)
             //配置录制
             await stream.addOutput(self.recorder)
@@ -130,12 +123,12 @@ public class TFIngest: NSObject {
             await stream.setVideoSettings(videoSettings)
             //视频的帧率
             await mixer.setFrameRate(configuration.videoFrameRate)
-
+            
+            //TODO: 已经是在连接中了的
+            let temp_connected = self.preference.isConnected
             //切换了推流类型
-            if(temp_connected)
+            if(temp_connected && self.pushUrl.count>0)
             {
-                if self.pushUrl.count>0 {
-        
                     self.startLive(url: self.pushUrl) {[weak self] code, msg in
                         guard let `self` = self else { return }
                         self.preference.pause = false
@@ -148,22 +141,16 @@ public class TFIngest: NSObject {
                             
                         }
                     }
-                    
-                    
-                }else{
-                    
-                    if callback != nil {
-                        callback!(0, "")
-                    }
-                }
+         
             }else{
+                self.preference.pause = false
                 if callback != nil {
                     callback!(0, "")
                 }
             }
 
         }
-        if again==false {
+        if renew==false {
             
             Task {
                
@@ -283,7 +270,6 @@ public class TFIngest: NSObject {
         self.pushUrl = url
         Task {
             preference.close()
-            await preference.configuration(configuration.streamMode)
             
             if configuration.streamMode == .rtmp {
                 do {
@@ -360,28 +346,24 @@ public class TFIngest: NSObject {
     {
         self.pushUrl = pushUrl
          Task {
-             guard let mixer = self.mixer else {
-                 return
-             }
+             
              if streamMode != configuration.streamMode
              {
                  configuration.streamMode = streamMode
                  //暂时暂停回调直播状态
                  preference.pause = true
                  
-                 preference.close()
-                 await preference.configuration(configuration.streamMode)
-                 
+                 preference.shutdown()
+               
           
-                 let new_Connected = self.preference.isConnected
+                
          
 
                  let startTime = DispatchTime.now()
 
                  self.configurationSDK(preview: preview,
                                        configuration:configuration,
-                                       again:true,
-                                       temp_connected:new_Connected) { code, msg in
+                                       renew:true) { code, msg in
                          let elapsedTime = DispatchTime.now().uptimeNanoseconds - startTime.uptimeNanoseconds
                          let elapsedSeconds = Double(elapsedTime) / 1_000_000_000.0
                          let delay = max(0.5 - elapsedSeconds, 0)

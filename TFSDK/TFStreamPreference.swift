@@ -28,7 +28,7 @@ public class TFStreamPreference: NSObject {
     //推流已经连接
     @objc public var isConnected:Bool = false
 
-    func configuration(_ streamMode: TFStreamMode) async {
+    func configurationStreamMode(_ streamMode: TFStreamMode) ->HKStream {
         self.streamMode = streamMode
         if streamMode == .srt {
             let connection = SRTConnection()
@@ -41,6 +41,12 @@ public class TFStreamPreference: NSObject {
             stream = RTMPStream(connection: connection)
 
         }
+        //停止监听
+        self.stopListening()
+        //开启监听配置
+        self.readyState()
+        
+        return stream!
     }
     // 在需要取消监听的时候调用这个方法
      func stopListening() {
@@ -70,6 +76,8 @@ public class TFStreamPreference: NSObject {
     {
         self.stopListening()
         self.close()
+//        self.connection = nil
+//        self.stream = nil
     }
     func statusChanged(status:TFIngestStreamReadyState)
     {
