@@ -321,3 +321,21 @@ public class TFIngestConfiguration: NSObject {
     /**摄像头输出方向*/
     @objc public var outputImageOrientation: AVCaptureVideoOrientation = .portrait
 }
+extension UIInterfaceOrientation {
+    func toAVCaptureVideoOrientation() -> AVCaptureVideoOrientation? {
+        switch self {
+        case .portrait:
+            return .portrait
+        case .portraitUpsideDown:
+            return .portraitUpsideDown
+        case .landscapeLeft:
+            return .landscapeRight
+        case .landscapeRight:
+            return .landscapeLeft
+        case .unknown:
+            return .portrait
+        @unknown default:
+            return .portrait
+        }
+    }
+}

@@ -101,7 +101,7 @@
                             mirror:true
                      cameraType:AVCaptureDeviceTypeBuiltInWideAngleCamera
                           position:AVCaptureDevicePositionFront
-     outputImageOrientation:UIInterfaceOrientationPortrait];
+            outputImageOrientation:AVCaptureVideoOrientationPortrait];
     
     //设置URL
     self.pushUrl = [self SRT_URL];

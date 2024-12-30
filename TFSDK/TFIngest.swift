@@ -50,7 +50,7 @@ public class TFIngest: NSObject {
                              mirror:Bool,
                              cameraType:AVCaptureDevice.DeviceType,
                              position: AVCaptureDevice.Position,
-                             outputImageOrientation: UIInterfaceOrientation)
+                             outputImageOrientation:AVCaptureVideoOrientation)
     {
         self.configurationSDK(preview: preview,
                               videoSize: videoSize,
@@ -61,7 +61,8 @@ public class TFIngest: NSObject {
                               cameraType:cameraType,
                               position:position,
                               again:false,
-                              temp_connected:false)
+                              temp_connected:false,
+                              outputImageOrientation:outputImageOrientation)
         //TODO: 捕捉设备方向的变化
 //        NotificationCenter.default.addObserver(self, selector: #selector(on(_:)), name: UIDevice.orientationDidChangeNotification, object: nil)
         //TODO: 监听 AVAudioSession 的中断通知
@@ -79,6 +80,7 @@ public class TFIngest: NSObject {
                           position:AVCaptureDevice.Position,
                           again:Bool,
                           temp_connected:Bool,
+                          outputImageOrientation: AVCaptureVideoOrientation,
                           callback: ((_ code: Int, _ msg: String) -> Void)? = nil)
     {
               self.preview = preview
@@ -92,7 +94,7 @@ public class TFIngest: NSObject {
             configuration.videoBitRate = videoBitRate
             configuration.videoFrameRate = videoFrameRate
             configuration.mirror = mirror
-
+            configuration.outputImageOrientation = outputImageOrientation
         
         if self.mixer == nil {
             mixer = MediaMixer()
@@ -126,12 +128,12 @@ public class TFIngest: NSObject {
                 return
             }
             if again==false {
-                if let windowScene = await UIApplication.shared.connectedScenes.first as? UIWindowScene {
-                    let orientation = await windowScene.interfaceOrientation
-                    if let videoOrientation = DeviceUtil.videoOrientation(by: orientation) {
-                        await mixer.setVideoOrientation(videoOrientation)
-                    }
-                }
+//                if let windowScene = await UIApplication.shared.connectedScenes.first as? UIWindowScene {
+//                    let orientation = await windowScene.interfaceOrientation
+//                    if let videoOrientation = DeviceUtil.videoOrientation(by: orientation) {
+                        await mixer.setVideoOrientation(outputImageOrientation)
+//                    }
+//                }
                 await mixer.setMonitoringEnabled(DeviceUtil.isHeadphoneConnected())
                 
                 var videoMixerSettings = await mixer.videoMixerSettings
@@ -423,7 +425,8 @@ public class TFIngest: NSObject {
                                        cameraType: self.currentDeviceType,
                                        position: self.currentPosition,
                                        again:true,
-                                       temp_connected:new_Connected) { code, msg in
+                                       temp_connected:new_Connected,
+                                       outputImageOrientation:configuration.outputImageOrientation) { code, msg in
                          let elapsedTime = DispatchTime.now().uptimeNanoseconds - startTime.uptimeNanoseconds
                          let elapsedSeconds = Double(elapsedTime) / 1_000_000_000.0
                          let delay = max(0.5 - elapsedSeconds, 0)
