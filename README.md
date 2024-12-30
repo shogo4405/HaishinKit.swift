@@ -13,7 +13,7 @@
 ## 💖 Sponsors
 Do you need additional support? Technical support on Issues and Discussions is provided only to contributors and academic researchers of HaishinKit. By becoming a sponsor, we can provide the support you need.
 
-Sponsor: $50 per month: Technical support via GitHub Issues with priority response.
+Sponsor: [$50 per month](https://github.com/sponsors/shogo4405): Technical support via GitHub Issues/Discussions with priority response.
 
 ## 💬 Communication
 * GitHub Issues and Discussions are open spaces for communication among users and are available to everyone as long as [the code of conduct](https://github.com/shogo4405/HaishinKit.swift?tab=coc-ov-file) is followed.
