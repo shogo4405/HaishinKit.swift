@@ -349,16 +349,22 @@ public class TFIngest: NSObject {
              
              if streamMode != configuration.streamMode
              {
+                 
+                 guard let mixer = self.mixer else {
+                     return
+                 }
+                 guard let stream = preference.stream else {
+                     return
+                 }
+                 
+                 await mixer.removeOutput(stream)
+                 
                  configuration.streamMode = streamMode
                  //暂时暂停回调直播状态
                  preference.pause = true
                  
                  preference.shutdown()
-               
-          
-                
-         
-
+           
                  let startTime = DispatchTime.now()
 
                  self.configurationSDK(preview: preview,
