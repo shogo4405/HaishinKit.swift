@@ -38,7 +38,7 @@
     CGFloat rightX = self.view.frame.size.width-100;
     
     [self view:self.view addButton:CGRectMake(rightX, 50, 100, 30) title:@"退出" action:@selector(exitBtnClick:) selected:false];
-    self.streamBtn = [self view:self.view addButton:CGRectMake(0, 50, 100, 30) title:@"SRT推流" action:@selector(streamClick:) selected:1];
+    self.streamBtn = [self view:self.view addButton:CGRectMake(0, 50, 100, 30) title:@"RTMP推流" action:@selector(streamClick:) selected:1];
     self.streamBtn.selected = true;
     
     [self view:self.view addButton:CGRectMake(0, 100, 100, 30) title:@"开始推流" action:@selector(srtClick:) selected:false];
@@ -85,7 +85,7 @@
     [self view:self.view addButton:CGRectMake(0, 490, 100, 30) title:@"摄像头 开" action:@selector(cameraClick:) selected:1];
 
     [self view:self.view addButton:CGRectMake(0, 540, 200, 30) title:@"CGSizeMake(240, 320)" action:@selector(sizeMakeClick:) selected:1];
-    self.videoSizeMak = CGSizeMake(240, 320);
+    self.videoSizeMak = CGSizeMake(540, 960);
     
     self.ingest = [[TFIngest alloc]init];
     
@@ -97,7 +97,7 @@
     model.currentDeviceType = AVCaptureDeviceTypeBuiltInWideAngleCamera;
     model.currentPosition = AVCaptureDevicePositionFront;
     model.outputImageOrientation = AVCaptureVideoOrientationPortrait;
-    
+    model.streamMode = TFStreamModeRtmp;
     
     //前置摄像头的本地预览锁定为水平翻转  默认 true
     self.ingest.frontCameraPreviewLockedToFlipHorizontally = false;
@@ -106,7 +106,7 @@
                      configuration:model];
     
     //设置URL
-    self.pushUrl = [self SRT_URL];
+    self.pushUrl = [self RTMP_URL];
 
 }
 - (void)sizeMakeClick:(UIButton*)btn
@@ -516,11 +516,11 @@
 }
 - (NSString*)RTMP_URL
 {
-    return @"rtmp://live-push-15.talk-fun.com/live/24827_JCMnJSAnSCshLCgoKSdAEA?txSecret=c648aab450dd620f549751f423e7a933&txTime=676F7236";
+    return @"rtmp://live-push-15.talk-fun.com/live/24827_JCMnJSAnSCshLC4vKClAEA?txSecret=3184dc33fd671d3fa368c70638875656&txTime=677355FE";
 }
 - (NSString*)SRT_URL
 {
-    return @"srt://live-push-15.talk-fun.com:9000?streamid=#!::h=live-push-15.talk-fun.com,r=live/24827_JCMnJSAnSCshLC8vKStAEA,txSecret=eac9aeb761ca718469cdaa0d29ce060d,txTime=6770B018";
+    return @"srt://live-push-15.talk-fun.com:9000?streamid=#!::h=live-push-15.talk-fun.com,r=live/24827_JCMnJSAnSCshLC4vKClAEA,txSecret=c091a26d0742c7e1e6a1f0a380772b16,txTime=67735747";
 }
 - (void)dealloc{
     NSLog(@"控制器销毁==========>");

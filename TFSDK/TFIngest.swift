@@ -42,7 +42,6 @@ public class TFIngest: NSObject {
     @objc public func setSDK(preview:TFDisplays,
                              configuration:TFIngestConfiguration)
     {
-        preference.streamMode2 = configuration.streamMode
         self.configurationSDK(preview: preview,
                               configuration: configuration,
                               again:false,
@@ -113,7 +112,8 @@ public class TFIngest: NSObject {
             }
             
             //----------------
-            guard let stream = self.preference.stream() else {
+            await preference.configuration(configuration.streamMode)
+            guard let stream = self.preference.stream else {
                 return
             }
             await mixer.addOutput(stream)
@@ -282,17 +282,15 @@ public class TFIngest: NSObject {
         }
         self.pushUrl = url
         Task {
+            preference.close()
+            await preference.configuration(configuration.streamMode)
             
-            if preference.streamMode2 == .rtmp {
-                  
-                    do {
-                    guard
-                      
-                        let stream = preference.stream() as? RTMPStream else {
+            if configuration.streamMode == .rtmp {
+                do {
+                     guard let connection = preference.connection as? RTMPConnection,let stream = preference.stream as? RTMPStream else {
                         return
-                    }
-                    let connection = preference.rtmpConnection
-                        
+                     }
+                     
                     let connect_response3 = try await connection.connect(url)
                     logger.info(connect_response3)
                     let publish_response = try await stream.publish(TFIngestTool.extractLastPathComponent(from: url))
@@ -318,13 +316,13 @@ public class TFIngest: NSObject {
                    
               
                 }
-            else  if preference.streamMode2 == .srt {
+            else  if configuration.streamMode == .srt {
               
                     do {
-                        guard let stream = preference.stream() as? SRTStream else {
-                            return
+                        
+                        guard let connection = preference.connection as? SRTConnection,let stream = preference.stream as? SRTStream else {
+                           return
                         }
-                        let connection = preference.srtConnection
                         
                         try await connection.open(URL(string: url))
                     
@@ -365,32 +363,19 @@ public class TFIngest: NSObject {
              guard let mixer = self.mixer else {
                  return
              }
-             if streamMode != preference.streamMode2
+             if streamMode != configuration.streamMode
              {
                  configuration.streamMode = streamMode
-                 preference.streamMode2 = streamMode
-                 
-                 
                  //暂时暂停回调直播状态
                  preference.pause = true
+                 
+                 preference.close()
+                 await preference.configuration(configuration.streamMode)
+                 
+          
                  let new_Connected = self.preference.isConnected
          
-                 preference.rtmpCancellable?.cancel()
-                 preference.srtCancellable?.cancel()
-                 
-                 _ = try? await self.preference.rtmpConnection.close()
-                 if let rtmpStream = preference.rtmpStream
-                 {
-                     _ = try? await rtmpStream.close()
-                     await mixer.removeOutput(rtmpStream)
-                 }
-                 //-------------
-                 _ = try? await preference.srtConnection.close()
-                  if let srtStream = preference.srtStream
-                  {
-                      await srtStream.close()
-                      await mixer.removeOutput(srtStream)
-                  }
+
                  let startTime = DispatchTime.now()
 
                  self.configurationSDK(preview: preview,
@@ -595,7 +580,7 @@ public class TFIngest: NSObject {
             guard let mixer = self.mixer else {
                 return
             }
-            guard let stream = self.preference.stream() else {
+            guard let stream = self.preference.stream else {
                 return
             }
             var videoSettings = await stream.videoSettings
@@ -615,7 +600,6 @@ public class TFIngest: NSObject {
             //格挡
             cameraPicture.videoSize = videoSize
            
-            
             //视频的帧率
             await mixer.setFrameRate(videoFrameRate)
            
@@ -811,7 +795,7 @@ public class TFIngest: NSObject {
             try? await mixer.attachAudio(nil)
             try? await mixer.attachVideo(nil, track: 0)
             
-            if let stream = preference.stream()
+            if let stream = preference.stream
             {
                 await mixer.removeOutput(stream)
             }

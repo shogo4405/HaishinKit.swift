@@ -13,59 +13,57 @@ import VideoToolbox
 import Combine
 public class TFStreamPreference: NSObject {
     @objc public weak var delegate: (any TFStreamPreferenceDelegate)?
-    let srtConnection = SRTConnection()
-    let rtmpConnection = RTMPConnection()
+
+    public var connection: Any?
+    private(set) var stream: (any HKStream)?
     
-    var rtmpStream:RTMPStream?
-    var srtStream:SRTStream?
-    
-    var streamMode2: TFStreamMode = .rtmp
+    var streamMode: TFStreamMode = .rtmp
     
     //暂停回调代理
     var pause:Bool = false
-    
-     var rtmpCancellable: AnyCancellable?
-     var srtCancellable: AnyCancellable?
+
+    var cancellable: AnyCancellable?
     
     var push_status = TFIngestStreamReadyState.idle
     //推流已经连接
     @objc public var isConnected:Bool = false
-    override init() {
-        super.init()
 
-        self.rtmpStream = RTMPStream(connection: self.rtmpConnection)
-        
-        self.srtStream = SRTStream(connection: self.srtConnection)
-        
-        self.readyState()
-    
-    }
-    
-    func stream()->(any HKStream)?
-    {
-        
-        if streamMode2 == .rtmp {
-            return self.rtmpStream
+    func configuration(_ streamMode: TFStreamMode) async {
+        self.streamMode = streamMode
+        if streamMode == .srt {
+            let connection = SRTConnection()
+            self.connection = connection
+            stream = SRTStream(connection: connection)
+
+        } else {
+            let connection = RTMPConnection()
+            self.connection = connection
+            stream = RTMPStream(connection: connection)
+
         }
-        
-        return self.srtStream
-        
     }
-    
     // 在需要取消监听的时候调用这个方法
      func stopListening() {
-         rtmpCancellable?.cancel()
-         rtmpCancellable = nil
-         
-         srtCancellable?.cancel()
-         srtCancellable = nil
+         cancellable?.cancel()
+         cancellable = nil
      }
     func close()
     {
         Task {
-            await srtStream?.close()
-          _ = try? await rtmpStream?.close()
-            
+            switch streamMode {
+            case .rtmp:
+                guard let connection = connection as? RTMPConnection else {
+                    return
+                }
+                try? await connection.close()
+                logger.info("conneciton.close")
+            case .srt:
+                guard let connection = connection as? SRTConnection else {
+                    return
+                }
+                try? await connection.close()
+                logger.info("conneciton.close")
+            }
         }
     }
     func shutdown()
@@ -86,14 +84,51 @@ public class TFStreamPreference: NSObject {
     func readyState() {
      
             Task {
-       
-                    guard let srtStream = srtStream else {
+                switch streamMode {
+                case .rtmp:
+                    guard let stream = stream as? RTMPStream else {
                         return
                     }
                     
-                    srtCancellable = await srtStream.$readyState.sink {[weak self] newState in
+                    cancellable = await stream.$readyState.sink {[weak self] newState in
                         guard let `self` = self else { return }
-                        if self.pause == false && self.streamMode2 == .srt  {
+                        if self.pause == false && self.streamMode == .rtmp {
+                            var status = TFIngestStreamReadyState.idle
+                            if newState == .publishing {
+                                status = .publishing
+                            }
+                            self.push_status = status
+                            
+                            self.statusChanged(status: status)
+                            switch newState {
+                            case .idle:
+//                                print("rtmp流处于空闲状态。")
+                                self.isConnected = false
+                            case .publishing:
+//                                print("rtmp流正在发布中")
+                                 status = .publishing
+                                self.isConnected = true
+                            case .playing:
+//                                print("rtmp流正在播放。")
+                                break
+                            case .play:
+//                                print("rtmp该流已发送播放请求，正在等待服务器批准。")
+                                break
+                            case .publish:
+//                                print("rtmp该流已发送发布请求并正在等待服务器的批准。")
+                                break
+                            }
+                        }
+                     
+                    }
+                 
+                case .srt:
+                    guard let stream = stream as? SRTStream else {
+                        return
+                    }
+                    cancellable = await stream.$readyState.sink {[weak self] newState in
+                        guard let `self` = self else { return }
+                        if self.pause == false && self.streamMode == .srt  {
                             var status = TFIngestStreamReadyState.idle
                             if newState == .publishing {
                                 status = .publishing
@@ -123,45 +158,8 @@ public class TFStreamPreference: NSObject {
                         }
                      
                     }
-                    
-            
-     
-                    guard let rtmpStream = rtmpStream else {
-                        return
-                    }
-                    rtmpCancellable = await rtmpStream.$readyState.sink {[weak self] newState in
-                        guard let `self` = self else { return }
-                        if self.pause == false && self.streamMode2 == .rtmp {
-                            var status = TFIngestStreamReadyState.idle
-                            if newState == .publishing {
-                                status = .publishing
-                            }
-                            self.push_status = status
-                            
-                            self.statusChanged(status: status)
-                            switch newState {
-                            case .idle:
-//                                print("rtmp流处于空闲状态。")
-                                self.isConnected = false
-                            case .publishing:
-//                                print("rtmp流正在发布中")
-                                 status = .publishing
-                                self.isConnected = true
-                            case .playing:
-//                                print("rtmp流正在播放。")
-                                break
-                            case .play:
-//                                print("rtmp该流已发送播放请求，正在等待服务器批准。")
-                                break
-                            case .publish:
-//                                print("rtmp该流已发送发布请求并正在等待服务器的批准。")
-                                break
-                            }
-                        }
-                     
-                    }
-              
-               
+                }
+           
             }
 
         }
