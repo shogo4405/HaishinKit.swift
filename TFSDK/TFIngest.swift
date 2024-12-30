@@ -395,8 +395,7 @@ public class TFIngest: NSObject {
                  preference.pause = true
                 
          
-//                 preference.rtmpCancellable?.cancel()
-//                 preference.srtCancellable?.cancel()
+
                  
                  _ = try? await self.preference.rtmpConnection.close()
                  if let rtmpStream = preference.rtmpStream
