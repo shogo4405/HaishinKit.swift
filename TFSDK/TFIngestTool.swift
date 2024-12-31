@@ -115,15 +115,7 @@ class TFIngestTool: NSObject {
           }
       }
     
-    class func callback(_ callback: ((Int, String) -> Void)?,code:NSInteger,msg:String)
-    {
-        DispatchQueue.main.async {
-            if let callback = callback {
-                callback(code,msg)
-            }
-            
-        }
-    }
+ 
     
     
  

@@ -22,7 +22,7 @@ public class TFStreamPreference: NSObject {
     var streamMode: TFStreamMode = .rtmp
     
     //暂停回调代理
-    var pause:Bool = false
+    var pause:Bool = true
     
      var rtmpCancellable: AnyCancellable?
      var srtCancellable: AnyCancellable?

@@ -36,7 +36,7 @@ public class TFIngest: NSObject {
     //格挡
     let cameraPicture = TFCameraPictureFilter()
     
-    let configuration = TFIngestConfiguration()
+    @objc public let configuration = TFIngestConfiguration()
     //TODO: 根据配置初始化SDK-------------
     @objc public func setSDK(preview:TFDisplays,
                              videoSize:CGSize,
@@ -163,7 +163,7 @@ public class TFIngest: NSObject {
                 print("切换了推流类型,重新开始推流")
                     self.startLive(url: self.pushUrl) {[weak self] code, msg in
                         guard let `self` = self else { return }
-                        self.preference.pause = false
+                        
                         self.preference.statusChanged(status: self.preference.push_status)
                         if callback != nil {
                             
@@ -317,21 +317,21 @@ public class TFIngest: NSObject {
                     logger.info(publish_response)
                         
                        
-                           TFIngestTool.callback(callback,code:0,msg: "")
+                        self.startLiveCallback(callback,code:0,msg: "")
                         
                         
                             } catch RTMPConnection.Error.requestFailed(let response) {
                                 logger.warn(response)
-                                TFIngestTool.callback(callback,code: -1,msg: "")
+                                self.startLiveCallback(callback,code: -1,msg: "")
                                 
                             } catch RTMPStream.Error.requestFailed(let response) {
                                 logger.warn(response)
-                                TFIngestTool.callback(callback,code: -1,msg: "")
+                                self.startLiveCallback(callback,code: -1,msg: "")
                                 
                             } catch {
                                 logger.warn(error)
                                
-                                TFIngestTool.callback(callback,code: -1,msg: "")
+                                self.startLiveCallback(callback,code: -1,msg: "")
                             }
                    
               
@@ -348,7 +348,7 @@ public class TFIngest: NSObject {
                     
                         await stream.publish()
 
-                        TFIngestTool.callback(callback,code: 0,msg: "")
+                        self.startLiveCallback(callback,code: 0,msg: "")
                     } catch {
                     
                         //打印错误原因
@@ -364,7 +364,7 @@ public class TFIngest: NSObject {
                                 msg = message
                     
                             }
-                            TFIngestTool.callback(callback,code: -1,msg: msg)
+                            self.startLiveCallback(callback,code: -1,msg: msg)
                         }
                         
                     }
@@ -394,9 +394,7 @@ public class TFIngest: NSObject {
                  //暂时暂停回调直播状态
                  preference.pause = true
                 
-         
-
-                 
+    
                  _ = try? await self.preference.rtmpConnection.close()
                  if let rtmpStream = preference.rtmpStream
                  {
@@ -433,6 +431,13 @@ public class TFIngest: NSObject {
                          }
                      
                  }
+                 
+             }else{
+                 
+                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                     callback(0, "")
+                 }
+                 
                  
              }
         
@@ -849,5 +854,16 @@ public class TFIngest: NSObject {
             NotificationCenter.default.removeObserver(self)
         }
        
+    }
+     func startLiveCallback(_ callback: ((Int, String) -> Void)?,code:NSInteger,msg:String)
+    {
+        DispatchQueue.main.async {
+            self.preference.pause = false
+            if let callback = callback {
+              
+                callback(code,msg)
+            }
+            
+        }
     }
 }
