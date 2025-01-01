@@ -595,23 +595,41 @@ public class TFIngest: NSObject {
     //TODO:  摄像头开关
     @objc public func setCamera(_ camera:Bool)
     {
-        //先加上格挡
-        cameraPicture.isAvailable = !camera
-        Task {
-            guard let mixer = self.mixer else {
-                return
-            }
+
+        Task {@ScreenActor in
+           
+            //先加上格挡
+    
             if(camera)
             {
+                guard let mixer = self.mixer else {
+                    return
+                }
                 let device = AVCaptureDevice.default(configuration.currentDeviceType, for: .video, position:configuration.currentPosition)
-                try? await mixer.attachVideo(device, track: 0){ videoUnit in
+                try? await mixer.attachVideo(device, track: 0){ videoUnit in }
+                    
+               
+                cameraPicture.isAvailable = false
+                cameraPicture.imageBlock = nil
+            }else{
+                cameraPicture.isAvailable = true
+                
+                cameraPicture.imageBlock = {[weak self] in
+                    guard let `self` = self else { return }
+                    guard let mixer = self.mixer else {
+                        return
+                    }
+                    Task {@ScreenActor in
+                        try? await mixer.attachVideo(nil, track: 0)
+                        
+                    }
                     
                 }
-                //视频的帧率
-                await mixer.setFrameRate(configuration.videoFrameRate)
-            }else{
-                try? await mixer.attachVideo(nil, track: 0)
-            
+                
+                
+                
+//
+       
             }
             isCamera = camera
         }

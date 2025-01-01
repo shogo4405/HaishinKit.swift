@@ -153,11 +153,12 @@ class TFCropRectFilter: TFFilter {
   
 }
 
-
+typealias imageRefBlock = () -> Void
 //格挡
 class TFCameraPictureFilter: TFFilter {
     public var videoSize: CGSize = .zero
     var imageRef:CIImage? = nil
+    var imageBlock: imageRefBlock?
     override init() {
         super.init()
         
@@ -184,13 +185,15 @@ class TFCameraPictureFilter: TFFilter {
             if let new_image = imageRef
             {
               let originalSize = image.extent.size
-              
+              //居中
                 if let resizedCIImage = TFIngestTool.resizeCIImage(image: new_image, to: originalSize, mode: UIView.ContentMode.scaleAspectFit) {
+
                     
-    
-                    
-//                if let resizedCIImage = TFIngestTool.resizeCIImage(image: new_image, targetSize: originalSize){
-                    
+                    if imageBlock != nil {
+                        imageBlock!()
+                        imageBlock = nil
+                        
+                    }
                        return resizedCIImage
                    }
              
