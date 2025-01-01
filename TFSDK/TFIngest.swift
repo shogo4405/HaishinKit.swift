@@ -638,8 +638,9 @@ public class TFIngest: NSObject {
             return
         }
         var videoSettings = await stream.videoSettings
+        videoSettings.videoSize = videoSize
+        //当前
         configuration.videoSize = videoSize
-        
         //水印
         watermark_effect.videoSize = videoSize
         //裁剪
@@ -665,14 +666,11 @@ public class TFIngest: NSObject {
             videoSettings.bitRate = videoBitRate
             ///// /// 视频的分辨率，宽高务必设定为 2 的倍数
             videoSettings.videoSize = videoSize
-            
             await stream.setVideoSettings(videoSettings)
             //-----------------------------------------------------------------
-            
             configuration.videoFrameRate = videoFrameRate
             configuration.videoBitRate = videoBitRate
             await self.setAllVideoSize(videoSize: videoSize)
-
             //视频的帧率
             await mixer.setFrameRate(videoFrameRate)
            
