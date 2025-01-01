@@ -86,7 +86,6 @@ public class TFIngest: NSObject {
             configuration.mirror = mirror
         configuration.currentDeviceType = cameraType
         configuration.currentPosition = position
-            configuration.videoSize = videoSize
             configuration.videoBitRate = videoBitRate
             configuration.videoFrameRate = videoFrameRate
             configuration.mirror = mirror
@@ -157,6 +156,8 @@ public class TFIngest: NSObject {
             //视频的帧率
              await mixer.setFrameRate(videoFrameRate)
 
+            await self.setAllVideoSize(videoSize: videoSize)
+            
             //切换了推流类型
             if(startLive && self.pushUrl.count>0)
             {
@@ -625,16 +626,27 @@ public class TFIngest: NSObject {
                     }
                     
                 }
-                
-                
-                
-//
-       
+      
             }
             isCamera = camera
         }
     }
 
+    func setAllVideoSize(videoSize:CGSize) async
+    {
+        guard let stream = self.preference.stream() else {
+            return
+        }
+        var videoSettings = await stream.videoSettings
+        configuration.videoSize = videoSize
+        
+        //水印
+        watermark_effect.videoSize = videoSize
+        //裁剪
+        cropRectFilter.videoSize = videoSize
+        //格挡
+        cameraPicture.videoSize = videoSize
+    }
     //TODO: 重新配置视频分辨率
     @objc public func setVideoMixerSettings(videoSize:CGSize,
                                             videoFrameRate:CGFloat,
@@ -659,15 +671,8 @@ public class TFIngest: NSObject {
             
             configuration.videoFrameRate = videoFrameRate
             configuration.videoBitRate = videoBitRate
-            configuration.videoSize = videoSize
-            
-            
-            //裁剪
-            cropRectFilter.videoSize = videoSize
-            //格挡
-            cameraPicture.videoSize = videoSize
-           
-            
+            await self.setAllVideoSize(videoSize: videoSize)
+
             //视频的帧率
             await mixer.setFrameRate(videoFrameRate)
            

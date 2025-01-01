@@ -20,10 +20,21 @@ class TFWatermarkFilter: TFFilter {
         if  isAvailable{
             guard let watermark = watermark else { return image }
             guard let filter: CIFilter = watermarkFilter else { return image }
-            
+            //------------------
+            var watermarkFrame2 = watermarkFrame
+//            let originalSize = image.extent.size
+//            if videoSize.width/videoSize.height>originalSize.width/originalSize.height {
+//                
+//                let height = originalSize.width*(videoSize.width/videoSize.height)
+//                
+//               watermarkFrame2 = CGRect(x: watermarkFrame.origin.x, y: (originalSize.height - height)/2+watermarkFrame.origin.y, width: watermarkFrame.size.width, height: watermarkFrame.size.height)
+//                
+//                
+//            }
+            //------------------
             // 使用新方法计算水印帧
-            let newWatermarkFrame = TFIngestTool.calculateNewWatermarkFrame(
-                originalFrame: watermarkFrame,
+            let watermarkFrame3 = TFIngestTool.calculateNewWatermarkFrame(
+                originalFrame: watermarkFrame2,
                 imageExtent: image.extent.size,
                 screenBounds: UIScreen.main.bounds
             )
@@ -31,7 +42,7 @@ class TFWatermarkFilter: TFFilter {
             UIGraphicsBeginImageContext(image.extent.size)
             
             // 将水印绘制到上下文中，使用新的帧
-            watermark.draw(in: newWatermarkFrame)
+            watermark.draw(in: watermarkFrame3)
             
             if let pronama = CIImage(image: UIGraphicsGetImageFromCurrentImageContext()!) {
                 UIGraphicsEndImageContext()
@@ -114,8 +125,6 @@ class TFTFBeautyFilter: TFFilter {
 //裁剪
 class TFCropRectFilter: TFFilter {
     
-    public var videoSize: CGSize = .zero
-
     override func execute(_ image: CIImage) -> CIImage {
         
         if  isAvailable{
@@ -123,9 +132,7 @@ class TFCropRectFilter: TFFilter {
             
             if videoSize.width/videoSize.height>originalSize.width/originalSize.height {
                 
-                
                 let height = originalSize.width*(videoSize.width/videoSize.height)
-//                let cropRectY =  (originalSize.height-height)/2
                 let cropRect = CGRect(
                     x: 0,
                     y: 0,
@@ -152,11 +159,10 @@ class TFCropRectFilter: TFFilter {
     }
   
 }
-
 typealias imageRefBlock = () -> Void
 //格挡
 class TFCameraPictureFilter: TFFilter {
-    public var videoSize: CGSize = .zero
+   
     var imageRef:CIImage? = nil
     var imageBlock: imageRefBlock?
     override init() {
@@ -206,7 +212,7 @@ class TFCameraPictureFilter: TFFilter {
 class TFFilter: VideoEffect {
     //是否启用
     var isAvailable:Bool = false
-
+    public var videoSize: CGSize = .zero
     // 在你的 execute 方法中使用
     func execute(_ image: CIImage) -> CIImage {
 
