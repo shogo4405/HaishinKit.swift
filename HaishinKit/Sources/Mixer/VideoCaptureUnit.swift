@@ -62,15 +62,15 @@ final class VideoCaptureUnit: CaptureUnit {
     #endif
 
     var inputs: AsyncStream<(UInt8, CMSampleBuffer)> {
-        let (stream, continutation) = AsyncStream<(UInt8, CMSampleBuffer)>.makeStream()
-        self.inputsContinuation = continutation
-        return stream
+        AsyncStream<(UInt8, CMSampleBuffer)> { continutation in
+            self.inputsContinuation = continutation
+        }
     }
 
     var output: AsyncStream<CMSampleBuffer> {
-        let (stream, continutation) = AsyncStream<CMSampleBuffer>.makeStream()
-        self.outputContinuation = continutation
-        return stream
+        AsyncStream<CMSampleBuffer> { continutation in
+            self.outputContinuation = continutation
+        }
     }
 
     private lazy var videoMixer = {
@@ -151,6 +151,11 @@ final class VideoCaptureUnit: CaptureUnit {
     @available(tvOS 17.0, *)
     func makeDataOutput(_ track: UInt8) -> IOVideoCaptureUnitDataOutput {
         return .init(track: track, videoMixer: videoMixer)
+    }
+
+    func finish() {
+        inputsContinuation?.finish()
+        outputContinuation?.finish()
     }
 
     @available(tvOS 17.0, *)
