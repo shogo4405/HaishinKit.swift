@@ -100,16 +100,15 @@ public class TFIngest: NSObject {
                     return
                 }
                 
-                //美颜
-                _ =  await mixer.screen.registerVideoEffect(beauty_effect)
-                
-                //水印
-                _ = await mixer.screen.registerVideoEffect(watermark_effect)
-                
+    
                 //裁剪
-                _ = await mixer.screen.registerVideoEffect(cropRectFilter)
                 cropRectFilter.isAvailable = true
                 cropRectFilter.videoSize = videoSize
+                _ = await mixer.screen.registerVideoEffect(cropRectFilter)
+                //美颜
+                _ =  await mixer.screen.registerVideoEffect(beauty_effect)
+                //水印
+                _ = await mixer.screen.registerVideoEffect(watermark_effect)
                 //格挡
                 _ = await mixer.screen.registerVideoEffect(cameraPicture)
                 

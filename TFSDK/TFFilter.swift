@@ -22,15 +22,15 @@ class TFWatermarkFilter: TFFilter {
             guard let filter: CIFilter = watermarkFilter else { return image }
             //------------------
             var watermarkFrame2 = watermarkFrame
-//            let originalSize = image.extent.size
-//            if videoSize.width/videoSize.height>originalSize.width/originalSize.height {
-//                
-//                let height = originalSize.width*(videoSize.width/videoSize.height)
-//                
-//               watermarkFrame2 = CGRect(x: watermarkFrame.origin.x, y: (originalSize.height - height)/2+watermarkFrame.origin.y, width: watermarkFrame.size.width, height: watermarkFrame.size.height)
-//                
-//                
-//            }
+            let originalSize = image.extent.size
+            if videoSize.width/videoSize.height>originalSize.width/originalSize.height {
+                
+                let height = originalSize.width*(videoSize.width/videoSize.height)
+                
+               watermarkFrame2 = CGRect(x: watermarkFrame.origin.x, y: (originalSize.height - height)/2+watermarkFrame.origin.y+watermarkFrame.size.height, width: watermarkFrame.size.width, height: watermarkFrame.size.height)
+                
+                
+            }
             //------------------
             // 使用新方法计算水印帧
             let watermarkFrame3 = TFIngestTool.calculateNewWatermarkFrame(

@@ -114,12 +114,14 @@
     
     if (btn.selected) {
         self.videoSizeMak = CGSizeMake(540, 960);
+        NSLog(@"当前分辨率%@",NSStringFromCGSize(self.videoSizeMak));
         [btn setTitle:@"CGSizeMake(540, 960)" forState:UIControlStateNormal];
         [_ingest setVideoMixerSettingsWithVideoSize:CGSizeMake(540, 960)
                                          videoFrameRate:30
                                            videoBitRate:900*1024];
     }else{
         self.videoSizeMak = CGSizeMake(240, 320);
+        NSLog(@"当前分辨率%@",NSStringFromCGSize(self.videoSizeMak));
         [btn setTitle:@"CGSizeMake(240, 320)" forState:UIControlStateNormal];
      
         //会容易闪退
@@ -130,7 +132,7 @@
                                            videoBitRate:600*1024];
     }
     
-    NSLog(@"当前分辨率%@",NSStringFromCGSize(self.videoSizeMak));
+    
 }
 //摄像头开关
 - (void)cameraClick:(UIButton*)btn
@@ -197,7 +199,7 @@
         imageView.contentMode = UIViewContentModeScaleAspectFit;
         imageView.frame = CGRectMake(0, 50, self.view.frame.size.width/2, 100);
         
-        [self.ingest addWatermark: [self highQualitySnapshot:imageView] frame:CGRectMake(0, 50, self.view.frame.size.width/2, 100)];
+        [self.ingest addWatermark: [self highQualitySnapshot:imageView] frame:CGRectMake(0, 10, self.view.frame.size.width/2, 100)];
     }else
     {
         [self.ingest clearWatermark];
