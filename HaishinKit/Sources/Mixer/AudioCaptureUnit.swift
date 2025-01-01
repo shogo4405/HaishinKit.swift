@@ -24,9 +24,9 @@ final class AudioCaptureUnit: CaptureUnit {
         return audioMixer.inputFormats
     }
     var output: AsyncStream<(AVAudioPCMBuffer, AVAudioTime)> {
-        let (stream, continutation) = AsyncStream<(AVAudioPCMBuffer, AVAudioTime)>.makeStream()
-        self.continutation = continutation
-        return stream
+        AsyncStream<(AVAudioPCMBuffer, AVAudioTime)> { continutation in
+            self.continutation = continutation
+        }
     }
     private lazy var audioMixer: any AudioMixer = {
         if isMultiTrackAudioMixingEnabled {
@@ -105,6 +105,10 @@ final class AudioCaptureUnit: CaptureUnit {
         default:
             break
         }
+    }
+
+    func finish() {
+        continutation?.finish()
     }
 }
 

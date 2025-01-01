@@ -141,7 +141,8 @@ extension DisplayLinkChoreographer: Runner {
         guard isRunning else {
             return
         }
-        displayLink = nil
         isRunning = false
+        displayLink = nil
+        continutation?.finish()
     }
 }

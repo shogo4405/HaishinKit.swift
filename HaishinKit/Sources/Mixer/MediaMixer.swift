@@ -346,6 +346,9 @@ public final actor MediaMixer {
     }
 
     func setVideoRenderingMode(_ mode: VideoMixerSettings.Mode) {
+        guard isRunning else {
+            return
+        }
         switch mode {
         case .passthrough:
             Task { @ScreenActor in
@@ -355,7 +358,7 @@ public final actor MediaMixer {
             Task { @ScreenActor in
                 displayLink.preferredFramesPerSecond = await Int(frameRate)
                 displayLink.startRunning()
-                for await updateFrame in displayLink.updateFrames where displayLink.isRunning {
+                for await updateFrame in displayLink.updateFrames {
                     guard let buffer = screen.makeSampleBuffer(updateFrame) else {
                         continue
                     }
@@ -390,7 +393,7 @@ extension MediaMixer: AsyncRunner {
         }
         isRunning = true
         Task {
-            for await inputs in videoIO.inputs where isRunning {
+            for await inputs in videoIO.inputs {
                 Task { @ScreenActor in
                     var sampleBuffer = inputs.1
                     screen.append(inputs.0, buffer: sampleBuffer)
@@ -405,14 +408,14 @@ extension MediaMixer: AsyncRunner {
             }
         }
         Task {
-            for await video in videoIO.output where isRunning {
+            for await video in videoIO.output {
                 for output in outputs where await output.videoTrackId == UInt8.max {
                     output.mixer(self, didOutput: video)
                 }
             }
         }
         Task {
-            for await audio in audioIO.output where isRunning {
+            for await audio in audioIO.output {
                 for output in outputs where await output.audioTrackId == UInt8.max {
                     output.mixer(self, didOutput: audio.0, when: audio.1)
                 }
@@ -450,6 +453,8 @@ extension MediaMixer: AsyncRunner {
         if useManualCapture {
             session.stopRunning()
         }
+        audioIO.finish()
+        videoIO.finish()
         cancellables.forEach { $0.cancel() }
         cancellables.removeAll()
         Task { @ScreenActor in
