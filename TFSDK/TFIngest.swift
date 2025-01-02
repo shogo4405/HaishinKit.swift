@@ -608,7 +608,12 @@ public class TFIngest: NSObject {
                 cameraPicture.isAvailable = false
                 cameraPicture.imageBlock = nil
                 let device = AVCaptureDevice.default(configuration.currentDeviceType, for: .video, position:configuration.currentPosition)
-                try? await mixer.attachVideo(device, track: 0){ videoUnit in }
+                try? await mixer.attachVideo(device, track: 0){ videoUnit in
+           
+                    //真正的变分辨率
+                    self.screenVideoSize()
+                    
+                }
                     
                
         
@@ -680,19 +685,22 @@ public class TFIngest: NSObject {
                 if((unit.device) != nil)
                 {
                     //真正的变分辨率 
-                    self.screenVideoSize(videoSize: videoSize)
+                    self.screenVideoSize()
                 }
                
             }
         }
     }
-    func screenVideoSize(videoSize:CGSize)
+    func screenVideoSize()
     {
         guard let mixer = self.mixer else {
             return
         }
+       let videoSize = configuration.videoSize
         Task {@ScreenActor in
-            mixer.screen.size = videoSize
+            if (mixer.screen.size.width != videoSize.width || mixer.screen.size.height != videoSize.height) {
+                mixer.screen.size = videoSize
+            }
         }
     }
     //默认倍放
