@@ -345,7 +345,7 @@ public final actor MediaMixer {
         }
     }
 
-    func setVideoRenderingMode(_ mode: VideoMixerSettings.Mode) {
+    private func setVideoRenderingMode(_ mode: VideoMixerSettings.Mode) {
         guard isRunning else {
             return
         }
@@ -371,7 +371,7 @@ public final actor MediaMixer {
     }
 
     #if os(iOS) || os(tvOS) || os(visionOS)
-    func setBackgroundMode(_ background: Bool) {
+    private func setBackgroundMode(_ background: Bool) {
         guard #available(tvOS 17.0, *) else {
             return
         }
@@ -397,7 +397,7 @@ extension MediaMixer: AsyncRunner {
                 Task { @ScreenActor in
                     var sampleBuffer = inputs.1
                     screen.append(inputs.0, buffer: sampleBuffer)
-                    if await videoMixerSettings.mainTrack == inputs.0 {
+                    if await videoMixerSettings.mainTrack == inputs.0 && 0 < screen.targetTimestamp {
                         let diff = ceil((screen.targetTimestamp - sampleBuffer.presentationTimeStamp.seconds) * 10000) / 10000
                         screen.videoCaptureLatency = diff
                     }
