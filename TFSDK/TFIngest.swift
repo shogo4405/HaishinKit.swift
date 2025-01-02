@@ -79,13 +79,13 @@ public class TFIngest: NSObject {
                           outputImageOrientation: AVCaptureVideoOrientation,
                           callback: ((_ code: Int, _ msg: String) -> Void)? = nil)
     {
-              self.preview = preview
-         configuration.streamMode = streamMode
+            self.preview = preview
+            configuration.streamMode = streamMode
             preference.streamMode = streamMode
             preview.videoGravity = .resizeAspectFill
             configuration.mirror = mirror
-        configuration.currentDeviceType = cameraType
-        configuration.currentPosition = position
+            configuration.currentDeviceType = cameraType
+            configuration.currentPosition = position
             configuration.videoBitRate = videoBitRate
             configuration.videoFrameRate = videoFrameRate
             configuration.mirror = mirror
@@ -99,8 +99,6 @@ public class TFIngest: NSObject {
                 guard let mixer = self.mixer else {
                     return
                 }
-                
-    
                 //裁剪
                 cropRectFilter.isAvailable = true
                 cropRectFilter.videoSize = videoSize
@@ -284,12 +282,12 @@ public class TFIngest: NSObject {
     //TODO: 结束推流
     @objc public func stopLive()
     {
-        if self.preference.isConnected {
+//        if self.preference.isConnected {
             DispatchQueue.main.async {
                 UIApplication.shared.isIdleTimerDisabled = true
             }
-            preference.close()
-        }
+            preference.stopLive()
+//        }
    
     }
     //TODO: 开始推流

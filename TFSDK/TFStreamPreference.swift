@@ -60,7 +60,7 @@ public class TFStreamPreference: NSObject {
          srtCancellable?.cancel()
          srtCancellable = nil
      }
-    func close()
+    func stopLive()
     {
         Task {
             await srtStream?.close()
@@ -69,9 +69,9 @@ public class TFStreamPreference: NSObject {
         }
     }
     func shutdown()
-    {
+    {    //结束监听推流状态
         self.stopListening()
-        self.close()
+        self.stopLive()
     }
     func statusChanged(status:TFIngestStreamReadyState)
     {
