@@ -605,12 +605,13 @@ public class TFIngest: NSObject {
                 guard let mixer = self.mixer else {
                     return
                 }
+                cameraPicture.isAvailable = false
+                cameraPicture.imageBlock = nil
                 let device = AVCaptureDevice.default(configuration.currentDeviceType, for: .video, position:configuration.currentPosition)
                 try? await mixer.attachVideo(device, track: 0){ videoUnit in }
                     
                
-                cameraPicture.isAvailable = false
-                cameraPicture.imageBlock = nil
+        
             }else{
                 cameraPicture.isAvailable = true
                 
@@ -672,12 +673,13 @@ public class TFIngest: NSObject {
             await self.setAllVideoSize(videoSize: videoSize)
             //视频的帧率
             await mixer.setFrameRate(videoFrameRate)
-           
+          
             try await mixer.configuration(video: 0) {[weak self] unit in
                 guard let `self` = self else { return }
 
                 if((unit.device) != nil)
                 {
+                    //真正的变分辨率 
                     self.screenVideoSize(videoSize: videoSize)
                 }
                
