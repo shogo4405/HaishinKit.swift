@@ -8,6 +8,7 @@
 import UIKit
 import CoreImage
 import TFGPUImage
+import HaishinKit
 //水印
 class TFWatermarkFilter: TFFilter {
     //水印图片

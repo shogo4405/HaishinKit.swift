@@ -2,7 +2,7 @@
 
 import AVFoundation
 import MetalKit
-
+import HaishinKit
 /// A view that displays a video content of a NetStream object which uses Metal api.
 public class TFDisplays: MTKView {
     //前摄像 or 后摄像头

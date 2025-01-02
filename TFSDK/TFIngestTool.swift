@@ -279,22 +279,7 @@ class TFIngestTool: NSObject {
         return newFrame
     }
 }
-extension Data {
-    func chunk(_ size: Int) -> [Data] {
-        if count < size {
-            return [self]
-        }
-        var chunks: [Data] = []
-        let length = count
-        var offset = 0
-        repeat {
-            let thisChunkSize = ((length - offset) > size) ? size : (length - offset)
-            chunks.append(subdata(in: offset..<offset + thisChunkSize))
-            offset += thisChunkSize
-        } while offset < length
-        return chunks
-    }
-}
+
 public class TFIngestConfiguration: NSObject {
     /**视频的分辨率，宽高务必设定为 2 的倍数，否则解码播放时可能出现绿边(这个videoSizeRespectingAspectRatio设置为YES则可能会改变)*/
     @objc public var videoSize:CGSize = .zero
@@ -329,5 +314,171 @@ extension UIInterfaceOrientation {
         @unknown default:
             return .portrait
         }
+    }
+}
+extension Data {
+    func chunk(_ size: Int) -> [Data] {
+        if count < size {
+            return [self]
+        }
+        var chunks: [Data] = []
+        let length = count
+        var offset = 0
+        repeat {
+            let thisChunkSize = ((length - offset) > size) ? size : (length - offset)
+            chunks.append(subdata(in: offset..<offset + thisChunkSize))
+            offset += thisChunkSize
+        } while offset < length
+        return chunks
+    }
+}
+extension CVPixelBuffer {
+    enum Error: Swift.Error {
+        case failedToLock(_ status: CVReturn)
+        case failedToUnlock(_ status: CVReturn)
+        case unsupportedFormat(_ format: OSType)
+    }
+
+    static let lockFlags = CVPixelBufferLockFlags(rawValue: .zero)
+
+    @inlinable @inline(__always)
+    var size: CGSize {
+        return .init(width: CVPixelBufferGetWidth(self), height: CVPixelBufferGetHeight(self))
+    }
+
+    @inlinable @inline(__always)
+    var dataSize: Int {
+        CVPixelBufferGetDataSize(self)
+    }
+
+    @inlinable @inline(__always)
+    var pixelFormatType: OSType {
+        CVPixelBufferGetPixelFormatType(self)
+    }
+
+    @inlinable @inline(__always)
+    var baseAddress: UnsafeMutableRawPointer? {
+        CVPixelBufferGetBaseAddress(self)
+    }
+
+    @inlinable @inline(__always)
+    var planeCount: Int {
+        CVPixelBufferGetPlaneCount(self)
+    }
+
+    @inlinable @inline(__always)
+    var bytesPerRow: Int {
+        CVPixelBufferGetBytesPerRow(self)
+    }
+
+    @inlinable @inline(__always)
+    var width: Int {
+        CVPixelBufferGetWidth(self)
+    }
+
+    @inlinable @inline(__always)
+    var height: Int {
+        CVPixelBufferGetHeight(self)
+    }
+
+    @inlinable @inline(__always)
+    var formatType: OSType {
+        CVPixelBufferGetPixelFormatType(self)
+    }
+
+    @inline(__always)
+    func copy(_ pixelBuffer: CVPixelBuffer?) throws {
+        // https://stackoverflow.com/questions/53132611/copy-a-cvpixelbuffer-on-any-ios-device
+        try pixelBuffer?.mutate(.readOnly) { pixelBuffer in
+            if planeCount == 0 {
+                let dst = self.baseAddress
+                let src = pixelBuffer.baseAddress
+                let bytesPerRowSrc = pixelBuffer.bytesPerRow
+                let bytesPerRowDst = bytesPerRowSrc
+                if bytesPerRowSrc == bytesPerRowDst {
+                    memcpy(dst, src, height * bytesPerRowSrc)
+                } else {
+                    var startOfRowSrc = src
+                    var startOfRowDst = dst
+                    for _ in 0..<height {
+                        memcpy(startOfRowDst, startOfRowSrc, min(bytesPerRowSrc, bytesPerRowDst))
+                        startOfRowSrc = startOfRowSrc?.advanced(by: bytesPerRowSrc)
+                        startOfRowDst = startOfRowDst?.advanced(by: bytesPerRowDst)
+                    }
+                }
+            } else {
+                for plane in 0..<planeCount {
+                    let dst = baseAddressOfPlane(plane)
+                    let src = pixelBuffer.baseAddressOfPlane(plane)
+                    let height = getHeightOfPlane(plane)
+                    let bytesPerRowSrc = pixelBuffer.bytesPerRawOfPlane(plane)
+                    let bytesPerRowDst = bytesPerRawOfPlane(plane)
+                    if bytesPerRowSrc == bytesPerRowDst {
+                        memcpy(dst, src, height * bytesPerRowSrc)
+                    } else {
+                        var startOfRowSrc = src
+                        var startOfRowDst = dst
+                        for _ in 0..<height {
+                            memcpy(startOfRowDst, startOfRowSrc, min(bytesPerRowSrc, bytesPerRowDst))
+                            startOfRowSrc = startOfRowSrc?.advanced(by: bytesPerRowSrc)
+                            startOfRowDst = startOfRowDst?.advanced(by: bytesPerRowDst)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @inline(__always)
+    func lockBaseAddress(_ lockFlags: CVPixelBufferLockFlags = CVPixelBufferLockFlags.readOnly) throws {
+        let status = CVPixelBufferLockBaseAddress(self, lockFlags)
+        guard status == kCVReturnSuccess else {
+            throw Error.failedToLock(status)
+        }
+    }
+
+    @inline(__always)
+    func unlockBaseAddress(_ lockFlags: CVPixelBufferLockFlags = CVPixelBufferLockFlags.readOnly) throws {
+        let status = CVPixelBufferUnlockBaseAddress(self, lockFlags)
+        guard status == kCVReturnSuccess else {
+            throw Error.failedToUnlock(status)
+        }
+    }
+
+    func makeCIImage() throws -> CIImage {
+        try lockBaseAddress(.readOnly)
+        let result = CIImage(cvPixelBuffer: self)
+        try unlockBaseAddress(.readOnly)
+        return result
+    }
+
+    @inline(__always)
+    func mutate(_ lockFlags: CVPixelBufferLockFlags, lambda: (CVPixelBuffer) throws -> Void) throws {
+        let status = CVPixelBufferLockBaseAddress(self, lockFlags)
+        guard status == kCVReturnSuccess else {
+            throw Error.failedToLock(status)
+        }
+        defer {
+            CVPixelBufferUnlockBaseAddress(self, lockFlags)
+        }
+        try lambda(self)
+    }
+
+    @inlinable
+    @inline(__always)
+    func baseAddressOfPlane(_ index: Int) -> UnsafeMutableRawPointer? {
+        CVPixelBufferGetBaseAddressOfPlane(self, index)
+    }
+
+    @inlinable
+    @inline(__always)
+    func getHeightOfPlane(_ index: Int) -> Int {
+        CVPixelBufferGetHeightOfPlane(self, index)
+    }
+
+    @inlinable
+    @inline(__always)
+    func bytesPerRawOfPlane(_ index: Int) -> Int {
+        CVPixelBufferGetBytesPerRowOfPlane(self, index)
     }
 }

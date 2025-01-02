@@ -23,7 +23,7 @@ Pod::Spec.new do |s|
   s.tvos.user_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=appletvsimulator*]' => 'x86_64' }
   s.tvos.pod_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=appletvsimulator*]' => 'x86_64' }
 
-  s.source_files = "SRTHaishinKit/SRTHaishinKit.h", "HaishinKit/Sources/**/*.swift" ,"SRTHaishinKit/Sources/SRT/*.swift" ,"TFSDK/*.{h,m,swift}" , "Examples/iOS/AudioCapture.swift"
+  s.source_files = "SRTHaishinKit/SRTHaishinKit.h" ,"SRTHaishinKit/Sources/SRT/*.swift" ,"TFSDK/*.{h,m,swift}" , "Examples/iOS/AudioCapture.swift"
 
   s.vendored_frameworks = "SRTHaishinKit/Vendor/SRT/libsrt.xcframework"
   s.dependency 'HaishinKit', '2.0.1'
