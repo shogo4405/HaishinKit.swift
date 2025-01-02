@@ -57,8 +57,6 @@ class TFWatermarkFilter: TFFilter {
         }
         return image
     }
-    
- 
 }
 //美颜
 class TFTFBeautyFilter: TFFilter {
@@ -139,12 +137,10 @@ class TFCropRectFilter: TFFilter {
                     width: originalSize.width,
                     height:height
                 )
-                
-                
+             
                 let new_image = image.cropped(to: cropRect)
                 
                if let resizedCIImage = TFIngestTool.resizeCIImage(image: new_image, targetSize: originalSize)
-//                if let resizedCIImage = TFIngestTool.resizeCIImage(image: new_image, to: originalSize, mode: UIView.ContentMode.scaleAspectFit)
                 {
                  return resizedCIImage
                     
@@ -187,23 +183,20 @@ class TFCameraPictureFilter: TFFilter {
     }
 
     override func execute(_ image: CIImage) -> CIImage {
-        if isAvailable{
-            if let new_image = imageRef
-            {
+        if isAvailable , let new_image = imageRef{
+           
               let originalSize = image.extent.size
               //居中
                 if let resizedCIImage = TFIngestTool.resizeCIImage(image: new_image, to: originalSize, mode: UIView.ContentMode.scaleAspectFit) {
 
-                    
                     if imageBlock != nil {
                         imageBlock!()
                         imageBlock = nil
                         
                     }
-                       return resizedCIImage
-                   }
-             
-            }
+                return resizedCIImage
+           }
+       
         }
         return image
     }
