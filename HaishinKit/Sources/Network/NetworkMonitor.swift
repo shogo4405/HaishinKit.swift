@@ -10,19 +10,28 @@ public final actor NetworkMonitor {
 
     /// An asynchronous sequence for network monitoring  event.
     public var event: AsyncStream<NetworkMonitorEvent> {
-        let (stream, continuation) = AsyncStream<NetworkMonitorEvent>.makeStream()
-        self.continuation = continuation
-        return stream
+        AsyncStream { continuation in
+            self.continuation = continuation
+        }
     }
 
     public private(set) var isRunning = false
+    private var timer: Task<Void, Never>? {
+        didSet {
+            oldValue?.cancel()
+        }
+    }
     private var measureInterval = 3
     private var currentBytesInPerSecond = 0
     private var currentBytesOutPerSecond = 0
     private var previousTotalBytesIn = 0
     private var previousTotalBytesOut = 0
     private var previousQueueBytesOut: [Int] = []
-    private var continuation: AsyncStream<NetworkMonitorEvent>.Continuation?
+    private var continuation: AsyncStream<NetworkMonitorEvent>.Continuation? {
+        didSet {
+            oldValue?.finish()
+        }
+    }
     private weak var reporter: (any NetworkTransportReporter)?
 
     /// Creates a new instance.
@@ -74,11 +83,11 @@ extension NetworkMonitor: AsyncRunner {
             return
         }
         isRunning = true
-        let timer = AsyncStream {
-            try? await Task.sleep(nanoseconds: 1_000_000_000)
-        }
-        Task {
-            for await _ in timer where isRunning {
+        timer = Task {
+            let timer = AsyncStream {
+                try? await Task.sleep(nanoseconds: 1_000_000_000)
+            }
+            for await _ in timer {
                 do {
                     let event = try await collect()
                     continuation?.yield(event)
@@ -94,5 +103,7 @@ extension NetworkMonitor: AsyncRunner {
             return
         }
         isRunning = false
+        timer = nil
+        continuation = nil
     }
 }
