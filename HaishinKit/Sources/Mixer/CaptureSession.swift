@@ -1,16 +1,5 @@
 import AVFoundation
 
-protocol CaptureSessionDelegate: AnyObject {
-    @available(tvOS 17.0, *)
-    func captureSession(_ session: CaptureSession, sessionRuntimeError session: AVCaptureSession, error: AVError)
-    #if os(iOS) || os(tvOS) || os(visionOS)
-    @available(tvOS 17.0, *)
-    func captureSession(_ session: CaptureSession, sessionWasInterrupted session: AVCaptureSession, reason: AVCaptureSession.InterruptionReason?)
-    @available(tvOS 17.0, *)
-    func captureSession(_ session: CaptureSession, sessionInterruptionEnded session: AVCaptureSession)
-    #endif
-}
-
 final class CaptureSession {
     #if os(iOS) || os(tvOS)
     static var isMultiCamSupported: Bool {
@@ -35,11 +24,11 @@ final class CaptureSession {
             }
         }
     }
-
     @available(tvOS 17.0, *)
     var isMultitaskingCameraAccessEnabled: Bool {
         return session.isMultitaskingCameraAccessEnabled
     }
+
     #elseif os(macOS)
     let isMultiCamSessionEnabled = true
     let isMultitaskingCameraAccessEnabled = true
@@ -48,8 +37,19 @@ final class CaptureSession {
     let isMultitaskingCameraAccessEnabled = false
     #endif
 
-    weak var delegate: (any CaptureSessionDelegate)?
     private(set) var isRunning = false
+
+    var isInturreped: AsyncStream<Bool> {
+        AsyncStream { continuation in
+            isInturrepedContinutation = continuation
+        }
+    }
+
+    var runtimeError: AsyncStream<AVError> {
+        AsyncStream { continutation in
+            runtimeErrorContinutation = continutation
+        }
+    }
 
     #if os(tvOS)
     private var _session: Any?
@@ -106,6 +106,18 @@ final class CaptureSession {
         #else
         return true
         #endif
+    }
+
+    private var isInturrepedContinutation: AsyncStream<Bool>.Continuation? {
+        didSet {
+            oldValue?.finish()
+        }
+    }
+
+    private var runtimeErrorContinutation: AsyncStream<AVError>.Continuation? {
+        didSet {
+            oldValue?.finish()
+        }
     }
 
     deinit {
@@ -225,6 +237,7 @@ final class CaptureSession {
         NotificationCenter.default.removeObserver(self, name: .AVCaptureSessionInterruptionEnded, object: session)
         #endif
         NotificationCenter.default.removeObserver(self, name: .AVCaptureSessionRuntimeError, object: session)
+        runtimeErrorContinutation = nil
     }
 
     @available(tvOS 17.0, *)
@@ -235,8 +248,7 @@ final class CaptureSession {
             let errorValue = notification.userInfo?[AVCaptureSessionErrorKey] as? NSError else {
             return
         }
-        let error = AVError(_nsError: errorValue)
-        delegate?.captureSession(self, sessionRuntimeError: session, error: error)
+        runtimeErrorContinutation?.yield(AVError(_nsError: errorValue))
     }
 
     #if os(iOS) || os(tvOS) || os(visionOS)
@@ -246,19 +258,13 @@ final class CaptureSession {
         guard let session = notification.object as? AVCaptureSession else {
             return
         }
-        guard let userInfoValue = notification.userInfo?[AVCaptureSessionInterruptionReasonKey] as AnyObject?,
-              let reasonIntegerValue = userInfoValue.integerValue,
-              let reason = AVCaptureSession.InterruptionReason(rawValue: reasonIntegerValue) else {
-            delegate?.captureSession(self, sessionWasInterrupted: session, reason: nil)
-            return
-        }
-        delegate?.captureSession(self, sessionWasInterrupted: session, reason: reason)
+        isInturrepedContinutation?.yield(true)
     }
 
     @available(tvOS 17.0, *)
     @objc
     private func sessionInterruptionEnded(_ notification: Notification) {
-        delegate?.captureSession(self, sessionInterruptionEnded: session)
+        isInturrepedContinutation?.yield(false)
     }
     #endif
 }

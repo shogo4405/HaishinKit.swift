@@ -83,6 +83,11 @@ public final actor MediaMixer {
         session.isRunning
     }
 
+    /// The interrupts events is occured or not.
+    public var isInterputted: AsyncStream<Bool> {
+        session.isInturreped
+    }
+
     #if os(iOS) || os(macOS)
     /// The video orientation for stream.
     public var videoOrientation: AVCaptureVideoOrientation {
@@ -383,6 +388,41 @@ public final actor MediaMixer {
         }
     }
     #endif
+
+    @available(tvOS 17.0, *)
+    private func sessionRuntimeErrorOccured(_ error: AVError) async {
+        switch error.code {
+        #if os(iOS) || os(tvOS) || os(visionOS)
+        case .mediaServicesWereReset:
+            session.startRunningIfNeeded()
+        #endif
+        #if os(iOS) || os(tvOS) || os(macOS)
+        case .unsupportedDeviceActiveFormat:
+            guard let device = error.device, let format = device.videoFormat(
+                width: session.sessionPreset.width ?? Int32.max,
+                height: session.sessionPreset.height ?? Int32.max,
+                frameRate: videoIO.frameRate,
+                isMultiCamSupported: session.isMultiCamSessionEnabled
+            ), device.activeFormat != format else {
+                return
+            }
+            do {
+                try device.lockForConfiguration()
+                device.activeFormat = format
+                if format.isFrameRateSupported(videoIO.frameRate) {
+                    device.activeVideoMinFrameDuration = CMTime(value: 100, timescale: CMTimeScale(100 * videoIO.frameRate))
+                    device.activeVideoMaxFrameDuration = CMTime(value: 100, timescale: CMTimeScale(100 * videoIO.frameRate))
+                }
+                device.unlockForConfiguration()
+                session.startRunningIfNeeded()
+            } catch {
+                logger.warn(error)
+            }
+        #endif
+        default:
+            break
+        }
+    }
 }
 
 extension MediaMixer: AsyncRunner {
@@ -418,6 +458,13 @@ extension MediaMixer: AsyncRunner {
             for await audio in audioIO.output {
                 for output in outputs where await output.audioTrackId == UInt8.max {
                     output.mixer(self, didOutput: audio.0, when: audio.1)
+                }
+            }
+        }
+        if #available(tvOS 17.0, *) {
+            Task {
+                for await runtimeError in session.runtimeError {
+                    await sessionRuntimeErrorOccured(runtimeError)
                 }
             }
         }
