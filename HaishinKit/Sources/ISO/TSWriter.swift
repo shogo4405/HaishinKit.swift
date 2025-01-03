@@ -11,7 +11,7 @@ public final class TSWriter {
     static let defaultSegmentDuration: Double = 2
     /// An asynchronous sequence for writing data.
     public var output: AsyncStream<Data> {
-        return AsyncStream<Data> { continuation in
+        AsyncStream { continuation in
             self.continuation = continuation
         }
     }
@@ -152,6 +152,7 @@ public final class TSWriter {
         clockTimeStamp = .zero
         rotatedTimeStamp = .zero
         expectedMedias.removeAll()
+        continuation = nil
     }
 
     private func writePacketizedElementaryStream(_ PID: UInt16, PES: PacketizedElementaryStream, timeStamp: CMTime, randomAccessIndicator: Bool) {
