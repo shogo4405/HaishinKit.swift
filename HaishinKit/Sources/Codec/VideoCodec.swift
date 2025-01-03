@@ -26,7 +26,7 @@ final class VideoCodec {
     var needsSync = true
     var passthrough = true
     var outputStream: AsyncStream<CMSampleBuffer> {
-        AsyncStream<CMSampleBuffer> { continuation in
+        AsyncStream { continuation in
             self.continuation = continuation
         }
     }
