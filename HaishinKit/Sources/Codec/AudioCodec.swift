@@ -20,9 +20,9 @@ final class AudioCodec {
     }
 
     var outputStream: AsyncStream<(AVAudioBuffer, AVAudioTime)> {
-        let (stream, continuation) = AsyncStream.makeStream(of: (AVAudioBuffer, AVAudioTime).self)
-        self.continuation = continuation
-        return stream
+        AsyncStream { continuation in
+            self.continuation = continuation
+        }
     }
 
     /// This instance is running to process(true) or not(false).
@@ -45,9 +45,13 @@ final class AudioCodec {
     }
     private var cursor: Int = 0
     private var inputBuffers: [AVAudioBuffer] = []
+    private var continuation: AsyncStream<(AVAudioBuffer, AVAudioTime)>.Continuation? {
+        didSet {
+            oldValue?.finish()
+        }
+    }
     private var outputBuffers: [AVAudioBuffer] = []
     private var audioConverter: AVAudioConverter?
-    private var continuation: AsyncStream<(AVAudioBuffer, AVAudioTime)>.Continuation?
 
     func append(_ sampleBuffer: CMSampleBuffer) {
         guard isRunning else {
@@ -184,7 +188,7 @@ extension AudioCodec: Runner {
         guard isRunning else {
             return
         }
-        continuation?.finish()
         isRunning = false
+        continuation = nil
     }
 }

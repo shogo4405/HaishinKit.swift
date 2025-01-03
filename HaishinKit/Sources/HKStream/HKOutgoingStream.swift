@@ -44,13 +44,13 @@ public final class HKOutgoingStream {
     /// The asynchronous sequence for video input buffer.
     public var videoInputStream: AsyncStream<CMSampleBuffer> {
         if 0 < videoInputBufferCounts {
-            let (stream, continuation) = AsyncStream.makeStream(of: CMSampleBuffer.self, bufferingPolicy: .bufferingNewest(videoInputBufferCounts))
-            self.videoInputContinuation = continuation
-            return stream
+            return AsyncStream(CMSampleBuffer.self, bufferingPolicy: .bufferingNewest(videoInputBufferCounts)) { continuation in
+                self.videoInputContinuation = continuation
+            }
         } else {
-            let (stream, continuation) = AsyncStream.makeStream(of: CMSampleBuffer.self)
-            self.videoInputContinuation = continuation
-            return stream
+            return AsyncStream { continuation in
+                self.videoInputContinuation = continuation
+            }
         }
     }
 
@@ -59,7 +59,11 @@ public final class HKOutgoingStream {
 
     private var audioCodec = AudioCodec()
     private var videoCodec = VideoCodec()
-    private var videoInputContinuation: AsyncStream<CMSampleBuffer>.Continuation?
+    private var videoInputContinuation: AsyncStream<CMSampleBuffer>.Continuation? {
+        didSet {
+            oldValue?.finish()
+        }
+    }
 
     /// Create a new instance.
     public init() {
@@ -106,8 +110,9 @@ extension HKOutgoingStream: Runner {
         guard isRunning else {
             return
         }
+        isRunning = false
         videoCodec.stopRunning()
         audioCodec.stopRunning()
-        isRunning = false
+        videoInputContinuation = nil
     }
 }
