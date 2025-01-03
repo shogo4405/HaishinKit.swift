@@ -5,7 +5,7 @@ import Foundation
 public final class TSReader {
     /// An asynchronous sequence for reading data.
     public var output: AsyncStream<(UInt16, CMSampleBuffer)> {
-        AsyncStream<(UInt16, CMSampleBuffer)> { continuation in
+        AsyncStream { continuation in
             self.continuation = continuation
         }
     }

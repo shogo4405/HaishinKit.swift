@@ -43,7 +43,6 @@ public actor SRTStream {
         if await connection?.connected == true {
             readyState = .publishing
             outgoing.startRunning()
-            writer.clear()
             if outgoing.videoInputFormat != nil {
                 writer.expectedMedias.insert(.video)
             }
@@ -51,22 +50,22 @@ public actor SRTStream {
                 writer.expectedMedias.insert(.audio)
             }
             Task {
-                for await buffer in outgoing.videoOutputStream where outgoing.isRunning {
+                for await buffer in outgoing.videoOutputStream {
                     append(buffer)
                 }
             }
             Task {
-                for await buffer in outgoing.audioOutputStream where outgoing.isRunning {
+                for await buffer in outgoing.audioOutputStream {
                     append(buffer.0, when: buffer.1)
                 }
             }
             Task {
-                for await buffer in outgoing.videoInputStream where outgoing.isRunning {
+                for await buffer in outgoing.videoInputStream {
                     outgoing.append(video: buffer)
                 }
             }
             Task {
-                for await data in writer.output where outgoing.isRunning {
+                for await data in writer.output {
                     await connection?.send(data)
                 }
             }
@@ -87,11 +86,10 @@ public actor SRTStream {
             return
         }
         if await connection?.connected == true {
-            reader.clear()
             await connection?.recv()
             Task {
                 await incoming.startRunning()
-                for await buffer in reader.output where await incoming.isRunning {
+                for await buffer in reader.output {
                     await incoming.append(buffer.1)
                 }
             }
@@ -106,6 +104,8 @@ public actor SRTStream {
         guard readyState != .idle else {
             return
         }
+        writer.clear()
+        reader.clear()
         outgoing.stopRunning()
         Task { await incoming.stopRunning() }
         readyState = .idle
