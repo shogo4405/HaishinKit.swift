@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Copyright (c) shogo4405 and affiliates.
+# All rights reserved.
+#
+# This source code is licensed under the BSD-style license found in the
+# LICENSE file in the root directory of this source tree.
+
 srt_tvos() {
   OPENSSL=$(pwd)/OpenSSL/$1
 
