@@ -19,7 +19,7 @@ Pod::Spec.new do |s|
   s.ios.user_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'x86_64' }
   s.ios.pod_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'x86_64' }
 
-  # s.osx.deployment_target = "13.0"
+  # s.osx.deployment_target = "10.15"
   # s.osx.user_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=macosx*]' => 'x86_64' }
   # s.osx.pod_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=macosx*]' => 'x86_64' }
 
@@ -29,7 +29,7 @@ Pod::Spec.new do |s|
 
   # s.visionos.deployment_target = "1.0"
 
-  s.source_files = "SRTHaishinKit/SRTHaishinKit.h", "HaishinKit/Sources/**/*.swift"
+  s.source_files = "SRTHaishinKit/SRTHaishinKit.h", "SRTHaishinKit/Sources/**/*.swift"
   s.vendored_frameworks = "SRTHaishinKit/Vendor/SRT/libsrt.xcframework"
   s.dependency 'HaishinKit', '2.0.2'
 

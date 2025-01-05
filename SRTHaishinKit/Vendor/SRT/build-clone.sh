@@ -17,7 +17,7 @@ if which $(pwd)/srt >/dev/null; then
 else
   git clone git@github.com:Haivision/srt.git
   pushd srt
-  git checkout refs/tags/v1.5.3
+  git checkout refs/tags/v1.5.4
   popd
 fi
 

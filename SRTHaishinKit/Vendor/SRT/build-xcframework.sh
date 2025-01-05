@@ -6,8 +6,15 @@
 # This source code is licensed under the BSD 3-Clause License found in the
 # LICENSE file in the root directory of this source tree.
 
-cp module.modulemap Includes/module.modulemap
-cp ./build/ios/OS/version.h Includes/version.h
+rm -rf Includes
+mkdir -p Includes/libsrt
+# creating a directory in libsrt to address modulemap conflicts.
+# seealso:
+#   https://github.com/shogo4405/HaishinKit.swift/discussions/1403
+#   https://github.com/jessegrosjean/swift-cargo-problem
+cp -f srt/srtcore/*.h Includes/libsrt
+cp module.modulemap Includes/libsrt/module.modulemap
+cp ./build/ios/OS/version.h Includes/libsrt/version.h
 
 rm -rf libsrt.xcframework
 xcodebuild -create-xcframework \

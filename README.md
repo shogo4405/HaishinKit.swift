@@ -120,7 +120,7 @@ open Examples/Examples.xcodeproj
 |-|iOS|tvOS|macOS|visionOS|watchOS|
 |:----|:----:|:----:|:----:|:----:|:----:|
 |HaishinKit|13.0+|13.0+|10.15+|1.0+|-|
-|SRTHaishinKit|13.0+|13.0+|13.0+|1.0+|-|
+|SRTHaishinKit|13.0+|13.0+|10.15+|1.0+|-|
 
 ### Cocoa Keys
 Please contains Info.plist.
