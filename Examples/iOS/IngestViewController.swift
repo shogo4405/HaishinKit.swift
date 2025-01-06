@@ -60,7 +60,6 @@ final class IngestViewController: UIViewController {
             videoScreenObject.horizontalAlignment = .right
             videoScreenObject.layoutMargin = .init(top: 16, left: 0, bottom: 0, right: 16)
             videoScreenObject.size = .init(width: 160 * 2, height: 90 * 2)
-            
             await mixer.screen.size = .init(width: 720, height: 1280)
             await mixer.screen.backgroundColor = UIColor.black.cgColor
             try? await mixer.screen.addChild(videoScreenObject)

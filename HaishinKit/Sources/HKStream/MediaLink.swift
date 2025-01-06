@@ -6,7 +6,7 @@ final actor MediaLink {
     static let duration: TimeInterval = 0.0
 
     var dequeue: AsyncStream<CMSampleBuffer> {
-        AsyncStream<CMSampleBuffer> { continutation in
+        AsyncStream { continutation in
             self.continutation = continutation
         }
     }
@@ -62,11 +62,11 @@ extension MediaLink: AsyncRunner {
         guard !isRunning else {
             return
         }
-        duration = 0.0
         isRunning = true
+        duration = 0.0
         displayLink.startRunning()
         Task {
-            for await currentTime in displayLink.updateFrames where isRunning {
+            for await currentTime in displayLink.updateFrames {
                 guard let storage else {
                     continue
                 }

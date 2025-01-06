@@ -63,18 +63,18 @@ extension HKIncomingStream: AsyncRunner {
         isRunning = true
         Task {
             await mediaLink.startRunning()
-            for await video in await mediaLink.dequeue where await mediaLink.isRunning {
+            for await video in await mediaLink.dequeue {
                 await stream?.append(video)
             }
         }
         Task {
-            for await video in videoCodec.outputStream where videoCodec.isRunning {
+            for await video in videoCodec.outputStream {
                 await mediaLink.enqueue(video)
             }
         }
         Task {
             await audioPlayerNode?.startRunning()
-            for await audio in audioCodec.outputStream where audioCodec.isRunning {
+            for await audio in audioCodec.outputStream {
                 await audioPlayerNode?.enqueue(audio.0, when: audio.1)
                 await stream?.append(audio.0, when: audio.1)
             }

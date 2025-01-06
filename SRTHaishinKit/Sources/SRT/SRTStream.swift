@@ -18,17 +18,13 @@ public actor SRTStream {
     private lazy var incoming = HKIncomingStream(self)
     private lazy var outgoing = HKOutgoingStream()
     private weak var connection: SRTConnection?
-    //正在发送自定义数据
-    public var pushCustomData:Bool = false
+
     /// Creates a new stream object.
     public init(connection: SRTConnection) {
         self.connection = connection
         Task { await connection.addStream(self) }
     }
-    // 添加一个方法来修改属性
-    public func setPushCustomData(_ value: Bool) {
-        pushCustomData = value
-    }
+
     deinit {
         outputs.removeAll()
     }
@@ -47,7 +43,6 @@ public actor SRTStream {
         if await connection?.connected == true {
             readyState = .publishing
             outgoing.startRunning()
-            writer.clear()
             if outgoing.videoInputFormat != nil {
                 writer.expectedMedias.insert(.video)
             }
@@ -55,25 +50,22 @@ public actor SRTStream {
                 writer.expectedMedias.insert(.audio)
             }
             Task {
-                for await buffer in outgoing.videoOutputStream where outgoing.isRunning {
-                    if pushCustomData==false {
-                        append(buffer)
-                    }
-                    
+                for await buffer in outgoing.videoOutputStream {
+                    append(buffer)
                 }
             }
             Task {
-                for await buffer in outgoing.audioOutputStream where outgoing.isRunning {
+                for await buffer in outgoing.audioOutputStream {
                     append(buffer.0, when: buffer.1)
                 }
             }
             Task {
-                for await buffer in outgoing.videoInputStream where outgoing.isRunning {
+                for await buffer in outgoing.videoInputStream {
                     outgoing.append(video: buffer)
                 }
             }
             Task {
-                for await data in writer.output where outgoing.isRunning {
+                for await data in writer.output {
                     await connection?.send(data)
                 }
             }
@@ -94,11 +86,10 @@ public actor SRTStream {
             return
         }
         if await connection?.connected == true {
-            reader.clear()
             await connection?.recv()
             Task {
                 await incoming.startRunning()
-                for await buffer in reader.output where await incoming.isRunning {
+                for await buffer in reader.output {
                     await incoming.append(buffer.1)
                 }
             }
@@ -113,6 +104,8 @@ public actor SRTStream {
         guard readyState != .idle else {
             return
         }
+        writer.clear()
+        reader.clear()
         outgoing.stopRunning()
         Task { await incoming.stopRunning() }
         readyState = .idle

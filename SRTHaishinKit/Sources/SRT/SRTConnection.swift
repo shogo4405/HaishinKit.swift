@@ -45,6 +45,7 @@ public actor SRTConnection: NetworkConnection {
     }
 
     deinit {
+        streams.removeAll()
         srt_cleanup()
     }
 
