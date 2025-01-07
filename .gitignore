@@ -21,13 +21,12 @@ Carthage/*
 .vscode/
 .swiftpm/
 
-HaishinKit.xcodeproj/project.xcworkspace/xcuserdata/shogo.xcuserdatad/WorkspaceSettings.xcsettings
 *.xcsettings
 docs/undocumented.json
 fastlane/report.xml
 docs/docsets/HaishinKit.docset/Contents/Resources/Documents/undocumented.json
-Vendor/SRT/OpenSSL/
-Vendor/SRT/srt/
-Vendor/SRT/Includes/
 HaishinKit.json
 SRTHaishinKit.json
+SRTHaishinKit/Vendor/SRT/OpenSSL/
+SRTHaishinKit/Vendor/SRT/srt/
+SRTHaishinKit/Vendor/SRT/Includes/

@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Copyright (c) shogo4405 and affiliates.
+# All rights reserved.
+#
+# This source code is licensed under the BSD 3-Clause License found in the
+# LICENSE file in the root directory of this source tree.
+
 srt_tvos() {
   OPENSSL=$(pwd)/OpenSSL/$1
 
@@ -12,6 +18,7 @@ srt_tvos() {
 
 # visionOS
 export TVOS_DEPLOYMENT_TARGET=13.0
+cp tvOS.cmake srt/scripts
 srt_tvos appletvsimulator SIMULATOR
 srt_tvos appletvos OS
 mkdir -p ./build/tvos/_SIMULATOR
