@@ -97,6 +97,7 @@ public final actor MediaMixer {
 
     public private(set) var isRunning = false
     private var outputs: [any MediaMixerOutput] = []
+    @MainActor
     private var cancellables: Set<AnyCancellable> = []
     private let useManualCapture: Bool
     private lazy var audioIO = AudioCaptureUnit(session)
@@ -473,22 +474,24 @@ extension MediaMixer: AsyncRunner {
             session.startRunning()
         }
         #if os(iOS) || os(tvOS) || os(visionOS)
-        NotificationCenter
-            .Publisher(center: .default, name: UIApplication.didEnterBackgroundNotification, object: nil)
-            .sink { _ in
-                Task { @MainActor in
-                    await self.setBackgroundMode(true)
+        Task { @MainActor in
+            NotificationCenter
+                .Publisher(center: .default, name: UIApplication.didEnterBackgroundNotification, object: nil)
+                .sink { _ in
+                    Task {
+                        await self.setBackgroundMode(true)
+                    }
                 }
-            }
-            .store(in: &cancellables)
-        NotificationCenter
-            .Publisher(center: .default, name: UIApplication.willEnterForegroundNotification, object: nil)
-            .sink { _ in
-                Task { @MainActor in
-                    await self.setBackgroundMode(false)
+                .store(in: &cancellables)
+            NotificationCenter
+                .Publisher(center: .default, name: UIApplication.willEnterForegroundNotification, object: nil)
+                .sink { _ in
+                    Task {
+                        await self.setBackgroundMode(false)
+                    }
                 }
-            }
-            .store(in: &cancellables)
+                .store(in: &cancellables)
+        }
         #endif
     }
 
@@ -502,8 +505,10 @@ extension MediaMixer: AsyncRunner {
         }
         audioIO.finish()
         videoIO.finish()
-        cancellables.forEach { $0.cancel() }
-        cancellables.removeAll()
+        Task { @MainActor in
+            cancellables.forEach { $0.cancel() }
+            cancellables.removeAll()
+        }
         Task { @ScreenActor in
             displayLink.stopRunning()
         }
