@@ -38,8 +38,8 @@ Task { MainActor in
 Task {
   stream.attachAudioPlayer(audioPlayer)
   do {
-    try await connection.connect("rtmp://localhost/appName/instanceName")
-    try await stream.publish(streamName)
+    try await connection.connect("srt://host:port?option=foo")
+    try await stream.publish()
   } catch {
     print(error)
   }
