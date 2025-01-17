@@ -133,10 +133,10 @@ public final actor MediaMixer {
         multiTrackAudioMixingEnabled: Bool,
         useManualCapture: Bool
     ) async {
-        await session.isMultiCamSessionEnabled = multiCamSessionEnabled
-        await audioIO.isMultiTrackAudioMixingEnabled = multiTrackAudioMixingEnabled
+        session.isMultiCamSessionEnabled = multiCamSessionEnabled
+        audioIO.isMultiTrackAudioMixingEnabled = multiTrackAudioMixingEnabled
         if !useManualCapture {
-            await startRunning()
+            startRunning()
         }
     }
 
@@ -163,9 +163,9 @@ public final actor MediaMixer {
         multiTrackAudioMixingEnabled: Bool,
         useManualCapture: Bool
     ) async {
-        await audioIO.isMultiTrackAudioMixingEnabled = multiTrackAudioMixingEnabled
+        audioIO.isMultiTrackAudioMixingEnabled = multiTrackAudioMixingEnabled
         if !useManualCapture {
-            await startRunning()
+            startRunning()
         }
     }
     #endif
@@ -436,7 +436,7 @@ extension MediaMixer: AsyncRunner {
         Task {
             for await inputs in videoIO.inputs {
                 Task { @ScreenActor in
-                    var sampleBuffer = inputs.1
+                    let sampleBuffer = inputs.1
                     screen.append(inputs.0, buffer: sampleBuffer)
                     if await videoMixerSettings.mainTrack == inputs.0 && 0 < screen.targetTimestamp {
                         let diff = ceil((screen.targetTimestamp - sampleBuffer.presentationTimeStamp.seconds) * 10000) / 10000

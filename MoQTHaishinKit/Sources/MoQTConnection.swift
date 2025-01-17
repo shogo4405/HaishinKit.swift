@@ -226,7 +226,7 @@ public actor MoQTConnection {
             let type = try datagramBuffer.getInt()
             switch MoQTDataStreamType(rawValue: type) {
             case .streamHeaderSubgroup:
-                let _ = try MoQTStreamHeaderSubgroup(&datagramBuffer)
+                _ = try MoQTStreamHeaderSubgroup(&datagramBuffer)
                 while 0 < datagramBuffer.bytesAvailable {
                     objectStreamContinuation?.yield(try .init(&datagramBuffer))
                 }

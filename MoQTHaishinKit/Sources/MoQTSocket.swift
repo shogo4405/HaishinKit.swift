@@ -105,7 +105,7 @@ final actor MoQTSocket {
     }
 
     func sendDatagram(_ data: Data) {
-        connectionGroup?.send(content: data) { error in
+        connectionGroup?.send(content: data) { _ in
         }
     }
 
@@ -129,7 +129,7 @@ final actor MoQTSocket {
     }
 
     private nonisolated func receive(on connection: NWConnection, continuation: AsyncStream<Data>.Continuation?) {
-        connection.receive(minimumIncompleteLength: 0, maximumLength: 65558) { content, a, b, c in
+        connection.receive(minimumIncompleteLength: 0, maximumLength: 65558) { content, _, _, _ in
             if let content {
                 continuation?.yield(content)
                 self.receive(on: connection, continuation: continuation)
