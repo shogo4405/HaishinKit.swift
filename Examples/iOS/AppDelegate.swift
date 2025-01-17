@@ -1,6 +1,6 @@
 import AVFoundation
 import HaishinKit
-import Logboard
+@preconcurrency import Logboard
 import UIKit
 
 let logger = LBLogger.with("com.haishinkit.Exsample.iOS")

@@ -26,7 +26,11 @@ final actor RTMPSocket {
             oldValue?.forceCancel()
         }
     }
-    private var outputs: AsyncStream<Data>.Continuation?
+    private var outputs: AsyncStream<Data>.Continuation? {
+        didSet {
+            oldValue?.finish()
+        }
+    }
     private var qualityOfService: DispatchQoS = .userInitiated
     private var continuation: CheckedContinuation<Void, any Swift.Error>?
     private lazy var networkQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.RTMPSocket.network", qos: qualityOfService)
