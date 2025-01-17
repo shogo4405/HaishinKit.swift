@@ -8,8 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		BC2902352AA0E66A004821D2 /* Screencast.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 2915EC521D85BDF100621092 /* Screencast.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		BC33A1192CDF523E0016EEA0 /* HaishinKit in Frameworks */ = {isa = PBXBuildFile; productRef = BC33A1182CDF523E0016EEA0 /* HaishinKit */; };
-		BC33A11B2CDF523E0016EEA0 /* SRTHaishinKit in Frameworks */ = {isa = PBXBuildFile; productRef = BC33A11A2CDF523E0016EEA0 /* SRTHaishinKit */; };
 		BC33A11D2CDF52550016EEA0 /* HaishinKit in Frameworks */ = {isa = PBXBuildFile; productRef = BC33A11C2CDF52550016EEA0 /* HaishinKit */; };
 		BC33A11F2CDF52550016EEA0 /* SRTHaishinKit in Frameworks */ = {isa = PBXBuildFile; productRef = BC33A11E2CDF52550016EEA0 /* SRTHaishinKit */; };
 		BC33A1212CDF525B0016EEA0 /* HaishinKit in Frameworks */ = {isa = PBXBuildFile; productRef = BC33A1202CDF525B0016EEA0 /* HaishinKit */; };
@@ -27,11 +25,14 @@
 		BC91298C2D12EB5E0077EFF3 /* Preference.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9129382D12EA820077EFF3 /* Preference.swift */; };
 		BC91298D2D12EB5E0077EFF3 /* Preference.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9129382D12EA820077EFF3 /* Preference.swift */; };
 		BC9129D22D12EBCE0077EFF3 /* HKStreamSwitcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9129372D12EA820077EFF3 /* HKStreamSwitcher.swift */; };
-		BC912A782D12F0600077EFF3 /* HaishinKit in Frameworks */ = {isa = PBXBuildFile; productRef = BC912A772D12F0600077EFF3 /* HaishinKit */; };
-		BC912A7A2D12F0600077EFF3 /* MoQTHaishinKit in Frameworks */ = {isa = PBXBuildFile; productRef = BC912A792D12F0600077EFF3 /* MoQTHaishinKit */; };
-		BC912A7E2D12F06F0077EFF3 /* SRTHaishinKit in Frameworks */ = {isa = PBXBuildFile; productRef = BC912A7D2D12F06F0077EFF3 /* SRTHaishinKit */; };
 		BC912A812D12F10C0077EFF3 /* libc++.1.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = BC912A802D12F0900077EFF3 /* libc++.1.tbd */; };
 		BC912DDD2D185D360077EFF3 /* MoQTHaishinKit in Frameworks */ = {isa = PBXBuildFile; productRef = BC912DDC2D185D360077EFF3 /* MoQTHaishinKit */; };
+		BCD917012D3A94B100D30743 /* HaishinKit in Frameworks */ = {isa = PBXBuildFile; productRef = BCD917002D3A94B100D30743 /* HaishinKit */; };
+		BCD917032D3A94B100D30743 /* MoQTHaishinKit in Frameworks */ = {isa = PBXBuildFile; productRef = BCD917022D3A94B100D30743 /* MoQTHaishinKit */; };
+		BCD917052D3A94B100D30743 /* SRTHaishinKit in Frameworks */ = {isa = PBXBuildFile; productRef = BCD917042D3A94B100D30743 /* SRTHaishinKit */; };
+		BCD917072D3A94BC00D30743 /* HaishinKit in Frameworks */ = {isa = PBXBuildFile; productRef = BCD917062D3A94BC00D30743 /* HaishinKit */; };
+		BCD917092D3A94BC00D30743 /* MoQTHaishinKit in Frameworks */ = {isa = PBXBuildFile; productRef = BCD917082D3A94BC00D30743 /* MoQTHaishinKit */; };
+		BCD9170B2D3A94BC00D30743 /* SRTHaishinKit in Frameworks */ = {isa = PBXBuildFile; productRef = BCD9170A2D3A94BC00D30743 /* SRTHaishinKit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -137,6 +138,7 @@
 		BC912A7F2D12F0830077EFF3 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "Platforms/XROS.platform/Developer/SDKs/XROS2.1.sdk/usr/lib/libc++.tbd"; sourceTree = DEVELOPER_DIR; };
 		BC912A802D12F0900077EFF3 /* libc++.1.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.1.tbd"; path = "Platforms/XROS.platform/Developer/SDKs/XROS2.1.sdk/usr/lib/libc++.1.tbd"; sourceTree = DEVELOPER_DIR; };
 		BCB798892CE06AEC0059DFE9 /* Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		BCD916432D3A934400D30743 /* HaishinKit */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = HaishinKit; path = ../; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -234,8 +236,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BC33A11B2CDF523E0016EEA0 /* SRTHaishinKit in Frameworks */,
-				BC33A1192CDF523E0016EEA0 /* HaishinKit in Frameworks */,
+				BCD917012D3A94B100D30743 /* HaishinKit in Frameworks */,
+				BCD917032D3A94B100D30743 /* MoQTHaishinKit in Frameworks */,
+				BCD917052D3A94B100D30743 /* SRTHaishinKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -263,9 +266,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BC912A782D12F0600077EFF3 /* HaishinKit in Frameworks */,
-				BC912A7A2D12F0600077EFF3 /* MoQTHaishinKit in Frameworks */,
-				BC912A7E2D12F06F0077EFF3 /* SRTHaishinKit in Frameworks */,
+				BCD917092D3A94BC00D30743 /* MoQTHaishinKit in Frameworks */,
+				BCD917072D3A94BC00D30743 /* HaishinKit in Frameworks */,
+				BCD9170B2D3A94BC00D30743 /* SRTHaishinKit in Frameworks */,
 				BC912A812D12F10C0077EFF3 /* libc++.1.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -323,6 +326,7 @@
 			children = (
 				BC912A802D12F0900077EFF3 /* libc++.1.tbd */,
 				BC912A7F2D12F0830077EFF3 /* libc++.tbd */,
+				BCD916432D3A934400D30743 /* HaishinKit */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -423,9 +427,9 @@
 			);
 			name = "Example visionOS";
 			packageProductDependencies = (
-				BC912A772D12F0600077EFF3 /* HaishinKit */,
-				BC912A792D12F0600077EFF3 /* MoQTHaishinKit */,
-				BC912A7D2D12F06F0077EFF3 /* SRTHaishinKit */,
+				BCD917062D3A94BC00D30743 /* HaishinKit */,
+				BCD917082D3A94BC00D30743 /* MoQTHaishinKit */,
+				BCD9170A2D3A94BC00D30743 /* SRTHaishinKit */,
 			);
 			productName = "Example visionOS";
 			productReference = BC7A0E3D2B088FA7005FB2F7 /* Example visionOS.app */;
@@ -503,7 +507,6 @@
 			);
 			mainGroup = 2945CBB31B4BE66000104112;
 			packageReferences = (
-				BC9128822D12E7AD0077EFF3 /* XCLocalSwiftPackageReference "../../HaishinKit.swift" */,
 			);
 			preferredProjectObjectVersion = 55;
 			productRefGroup = 2945CBBE1B4BE66000104112 /* Products */;
@@ -1336,16 +1339,6 @@
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		BC33A1182CDF523E0016EEA0 /* HaishinKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = BC33A1172CDF51620016EEA0 /* XCLocalSwiftPackageReference "../HaishinKit.swift" */;
-			productName = HaishinKit;
-		};
-		BC33A11A2CDF523E0016EEA0 /* SRTHaishinKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = BC33A1172CDF51620016EEA0 /* XCLocalSwiftPackageReference "../HaishinKit.swift" */;
-			productName = SRTHaishinKit;
-		};
 		BC33A11C2CDF52550016EEA0 /* HaishinKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = BC33A1172CDF51620016EEA0 /* XCLocalSwiftPackageReference "../HaishinKit.swift" */;
@@ -1381,25 +1374,34 @@
 			package = BC33A1172CDF51620016EEA0 /* XCLocalSwiftPackageReference "../HaishinKit.swift" */;
 			productName = MoQTHaishinKit;
 		};
-		BC912A772D12F0600077EFF3 /* HaishinKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = BC9128822D12E7AD0077EFF3 /* XCLocalSwiftPackageReference "../../HaishinKit.swift" */;
-			productName = HaishinKit;
-		};
-		BC912A792D12F0600077EFF3 /* MoQTHaishinKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = BC9128822D12E7AD0077EFF3 /* XCLocalSwiftPackageReference "../../HaishinKit.swift" */;
-			productName = MoQTHaishinKit;
-		};
-		BC912A7D2D12F06F0077EFF3 /* SRTHaishinKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = BC9128822D12E7AD0077EFF3 /* XCLocalSwiftPackageReference "../../HaishinKit.swift" */;
-			productName = SRTHaishinKit;
-		};
 		BC912DDC2D185D360077EFF3 /* MoQTHaishinKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = BC9128822D12E7AD0077EFF3 /* XCLocalSwiftPackageReference "../../HaishinKit.swift" */;
 			productName = MoQTHaishinKit;
+		};
+		BCD917002D3A94B100D30743 /* HaishinKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = HaishinKit;
+		};
+		BCD917022D3A94B100D30743 /* MoQTHaishinKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = MoQTHaishinKit;
+		};
+		BCD917042D3A94B100D30743 /* SRTHaishinKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SRTHaishinKit;
+		};
+		BCD917062D3A94BC00D30743 /* HaishinKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = HaishinKit;
+		};
+		BCD917082D3A94BC00D30743 /* MoQTHaishinKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = MoQTHaishinKit;
+		};
+		BCD9170A2D3A94BC00D30743 /* SRTHaishinKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SRTHaishinKit;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
