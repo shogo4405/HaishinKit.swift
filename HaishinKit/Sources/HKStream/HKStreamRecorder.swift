@@ -125,7 +125,20 @@ public actor HKStreamRecorder {
     ///
     /// This value allows the file to be written continuously, so the file will remain even if the app crashes or is forcefully terminated. A value of 10 seconds or more is recommended.
     /// - seealso: https://developer.apple.com/documentation/avfoundation/avassetwriter/1387469-moviefragmentinterval
+    @available(*, deprecated, renamed: "setMovieFragmentInterval")
     public func setMovieFragmentInterval(movieFragmentInterval: Double?) {
+        if let movieFragmentInterval {
+            self.movieFragmentInterval = max(10.0, movieFragmentInterval)
+        } else {
+            self.movieFragmentInterval = nil
+        }
+    }
+
+    /// Sets the movie fragment interval in sec.
+    ///
+    /// This value allows the file to be written continuously, so the file will remain even if the app crashes or is forcefully terminated. A value of 10 seconds or more is recommended.
+    /// - seealso: https://developer.apple.com/documentation/avfoundation/avassetwriter/1387469-moviefragmentinterval
+    public func setMovieFragmentInterval(_ movieFragmentInterval: Double?) {
         if let movieFragmentInterval {
             self.movieFragmentInterval = max(10.0, movieFragmentInterval)
         } else {
