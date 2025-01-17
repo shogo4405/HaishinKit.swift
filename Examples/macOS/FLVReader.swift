@@ -107,23 +107,23 @@ public struct FLVAudioTag: FLVTag {
     public var streamId: UInt32 = 0
     public var offset: UInt64 = 0
     /// Specifies the codec of audio.
-    public var codec: FLVAudioCodec = .unknown
+    public var codec: RTMPAudioCodec = .unknown
     /// Specifies the sound of rate.
-    public var soundRate: FLVSoundRate = .kHz5_5
+    public var soundRate: RTMPSoundRate = .kHz5_5
     /// Specifies the sound of size.
-    public var soundSize: FLVSoundSize = .snd8bit
+    public var soundSize: RTMPSoundSize = .snd8bit
     /// Specifies the sound of type.
-    public var soundType: FLVSoundType = .mono
+    public var soundType: RTMPSoundType = .mono
 
     public init() {
     }
 
     public mutating func readData(_ fileHandler: FileHandle) {
         let data: Data = fileHandler.readData(ofLength: headerSize)
-        codec = FLVAudioCodec(rawValue: data[0] >> 4) ?? .unknown
-        soundRate = FLVSoundRate(rawValue: (data[0] & 0b00001100) >> 2) ?? .kHz5_5
-        soundSize = FLVSoundSize(rawValue: (data[0] & 0b00000010) >> 1) ?? .snd8bit
-        soundType = FLVSoundType(rawValue: data[0] & 0b00000001) ?? .mono
+        codec = RTMPAudioCodec(rawValue: data[0] >> 4) ?? .unknown
+        soundRate = RTMPSoundRate(rawValue: (data[0] & 0b00001100) >> 2) ?? .kHz5_5
+        soundSize = RTMPSoundSize(rawValue: (data[0] & 0b00000010) >> 1) ?? .snd8bit
+        soundType = RTMPSoundType(rawValue: data[0] & 0b00000001) ?? .mono
     }
 }
 
@@ -137,11 +137,11 @@ public struct FLVVideoTag: FLVTag {
     public var streamId: UInt32 = 0
     public var offset: UInt64 = 0
     /// Specifies the frame type of video.
-    public var frameType: FLVFrameType = .command
+    public var frameType: RTMPFrameType = .command
     /// Specifies the codec of video.
-    public var codec: FLVVideoCodec = .unknown
+    public var codec: RTMPVideoCodec = .unknown
     /// Specifies the avc packet type.
-    public var avcPacketType: FLVAVCPacketType = .eos
+    public var avcPacketType: RTMPAVCPacketType = .eos
     /// Specifies the composition time.
     public var compositionTime: Int32 = 0
 
@@ -150,9 +150,9 @@ public struct FLVVideoTag: FLVTag {
 
     public mutating func readData(_ fileHandler: FileHandle) {
         let data: Data = fileHandler.readData(ofLength: headerSize)
-        frameType = FLVFrameType(rawValue: data[0] >> 4) ?? .command
-        codec = FLVVideoCodec(rawValue: data[0] & 0b00001111) ?? .unknown
-        avcPacketType = FLVAVCPacketType(rawValue: data[1]) ?? .eos
+        frameType = RTMPFrameType(rawValue: data[0] >> 4) ?? .command
+        codec = RTMPVideoCodec(rawValue: data[0] & 0b00001111) ?? .unknown
+        avcPacketType = RTMPAVCPacketType(rawValue: data[1]) ?? .eos
     }
 }
 

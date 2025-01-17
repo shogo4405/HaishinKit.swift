@@ -1,7 +1,7 @@
 import AVFoundation
 
 /// The type of flv supports aac packet types.
-enum FLVAACPacketType: UInt8 {
+enum RTMPAACPacketType: UInt8 {
     /// The sequence data.
     case seq = 0
     /// The raw data.
@@ -9,7 +9,7 @@ enum FLVAACPacketType: UInt8 {
 }
 
 /// The type of flv supports avc packet types.
-enum FLVAVCPacketType: UInt8 {
+enum RTMPAVCPacketType: UInt8 {
     /// The sequence data.
     case seq = 0
     /// The NAL unit data.
@@ -19,7 +19,7 @@ enum FLVAVCPacketType: UInt8 {
 }
 
 /// The type of flv supports audio codecs.
-enum FLVAudioCodec: UInt8 {
+enum RTMPAudioCodec: UInt8 {
     /// The PCM codec.
     case pcm = 0
     /// The ADPCM codec.
@@ -38,6 +38,8 @@ enum FLVAudioCodec: UInt8 {
     case g711A = 7
     /// The G.711 mu-law codec.
     case g711MU = 8
+    /// The signal FOURCC mode.
+    case exheader = 9
     /// The AAC codec.
     case aac = 10
     /// The Speex codec.
@@ -98,8 +100,8 @@ enum FLVAudioCodec: UInt8 {
             return nil
         }
         guard
-            let soundRate = FLVSoundRate(rawValue: (payload[0] & 0b00001100) >> 2),
-            let soundType = FLVSoundType(rawValue: (payload[0] & 0b00000001)) else {
+            let soundRate = RTMPSoundRate(rawValue: (payload[0] & 0b00001100) >> 2),
+            let soundType = RTMPSoundType(rawValue: (payload[0] & 0b00000001)) else {
             return nil
         }
         return AudioStreamBasicDescription(
@@ -117,7 +119,7 @@ enum FLVAudioCodec: UInt8 {
 }
 
 /// The type of flv supports video frame types.
-enum FLVFrameType: UInt8 {
+enum RTMPFrameType: UInt8 {
     /// The keyframe.
     case key = 1
     /// The inter frame.
@@ -130,7 +132,7 @@ enum FLVFrameType: UInt8 {
     case command = 5
 }
 
-enum FLVSoundRate: UInt8 {
+enum RTMPSoundRate: UInt8 {
     /// The sound rate of  5,500.0kHz.
     case kHz5_5 = 0
     /// Ths sound rate of 11,000.0kHz.
@@ -156,7 +158,7 @@ enum FLVSoundRate: UInt8 {
 }
 
 /// The type of flv supports audio sound size.
-enum FLVSoundSize: UInt8 {
+enum RTMPSoundSize: UInt8 {
     /// The 8bit sound.
     case snd8bit = 0
     /// The 16bit sound.
@@ -164,7 +166,7 @@ enum FLVSoundSize: UInt8 {
 }
 
 /// The type of flv supports audio sound channel type..
-enum FLVSoundType: UInt8 {
+enum RTMPSoundType: UInt8 {
     /// The mono sound.
     case mono = 0
     /// The stereo sound.
@@ -172,7 +174,7 @@ enum FLVSoundType: UInt8 {
 }
 
 /// The type of flv tag.
-enum FLVTagType: UInt8 {
+enum RTMPTagType: UInt8 {
     /// The Audio tag,
     case audio = 8
     /// The Video tag.
@@ -202,7 +204,7 @@ enum FLVTagType: UInt8 {
 }
 
 /// The type of flv supports video codecs.
-enum FLVVideoCodec: UInt8 {
+enum RTMPVideoCodec: UInt8 {
     /// The JPEG codec.
     case jpeg = 1
     /// The Sorenson H263 codec.
@@ -240,30 +242,4 @@ enum FLVVideoCodec: UInt8 {
             return false
         }
     }
-}
-
-enum FLVVideoFourCC: UInt32 {
-    case av1 = 0x61763031 // { 'a', 'v', '0', '1' }
-    case vp9 = 0x76703039 // { 'v', 'p', '0', '9' }
-    case hevc = 0x68766331 // { 'h', 'v', 'c', '1' }
-
-    var isSupported: Bool {
-        switch self {
-        case .av1:
-            return false
-        case .vp9:
-            return false
-        case .hevc:
-            return true
-        }
-    }
-}
-
-enum FLVVideoPacketType: UInt8 {
-    case sequenceStart = 0
-    case codedFrames = 1
-    case sequenceEnd = 2
-    case codedFramesX = 3
-    case metadata = 4
-    case mpeg2TSSequenceStart = 5
 }
