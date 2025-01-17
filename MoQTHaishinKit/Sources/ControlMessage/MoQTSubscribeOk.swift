@@ -16,7 +16,7 @@ public struct MoQTSubscribeOk: MoQTControlMessage {
             payload.putInt(subscribeId)
             payload.putInt(expires)
             payload.putInt(groupOrder.rawValue)
-            payload.putBool(contentExists)
+            _ = payload.putBool(contentExists)
             if contentExists {
                 if let largestGroupId {
                     payload.putInt(largestGroupId)
@@ -46,8 +46,8 @@ extension MoQTSubscribeOk {
         largestGroupId = contentExists ? try payload.getInt() : nil
         largestObjectId = contentExists ? try payload.getInt() : nil
         var subscribeParameters: [MoQTVersionSpecificParameter] = []
-        var numberOfParameters = try payload.getInt()
-        for i in 0..<numberOfParameters {
+        let numberOfParameters = try payload.getInt()
+        for _ in 0..<numberOfParameters {
             subscribeParameters.append(try .init(&payload))
         }
         self.subscribeParameters = subscribeParameters

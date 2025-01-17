@@ -106,7 +106,6 @@ final actor MoQTSocket {
 
     func sendDatagram(_ data: Data) {
         connectionGroup?.send(content: data) { error in
-            print(error, "->", data)
         }
     }
 
@@ -134,8 +133,6 @@ final actor MoQTSocket {
             if let content {
                 continuation?.yield(content)
                 self.receive(on: connection, continuation: continuation)
-            } else {
-                logger.warn(a, "->", b, "->", c)
             }
         }
     }

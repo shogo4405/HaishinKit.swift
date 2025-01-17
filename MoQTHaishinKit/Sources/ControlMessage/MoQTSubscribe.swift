@@ -84,7 +84,7 @@ extension MoQTSubscribe {
         subscribeId = try payload.getInt()
         trackAlias = try payload.getInt()
         var trackNamespace: [String] = []
-        for i in 0..<(try payload.getInt()) {
+        for _ in 0..<(try payload.getInt()) {
             trackNamespace.append(try payload.getString())
         }
         self.trackNamespace = trackNamespace
@@ -115,7 +115,7 @@ extension MoQTSubscribe {
             endObject = try payload.getInt()
         }
         var subscribeParameters: [MoQTVersionSpecificParameter] = []
-        for i in 0..<(try payload.getInt()) {
+        for _ in 0..<(try payload.getInt()) {
             subscribeParameters.append(try .init(&payload))
         }
         self.subscribeParameters = subscribeParameters

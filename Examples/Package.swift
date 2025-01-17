@@ -9,4 +9,3 @@ let package = Package(
     products: [],
     targets: []
 )
-

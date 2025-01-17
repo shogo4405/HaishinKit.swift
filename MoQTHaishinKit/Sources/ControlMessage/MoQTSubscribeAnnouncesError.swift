@@ -18,7 +18,7 @@ extension MoQTSubscribeAnnouncesError {
     init(_ payload: inout MoQTPayload) throws {
         let length = try payload.getInt()
         var trackNamespacePrefix: [String] = .init()
-        for i in 0..<length {
+        for _ in 0..<length {
             trackNamespacePrefix.append(try payload.getString())
         }
         self.trackNamespacePrefix = trackNamespacePrefix

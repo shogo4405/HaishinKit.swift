@@ -24,7 +24,6 @@ public struct MoQTSetupParameter: Sendable {
         get throws {
             switch value {
             case let value as String:
-                let length = value.count
                 var payload = MoQTPayload()
                 payload.putInt(key.rawValue)
                 payload.putString(value)

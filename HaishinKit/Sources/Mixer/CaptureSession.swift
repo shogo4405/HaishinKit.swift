@@ -244,7 +244,7 @@ final class CaptureSession {
     @objc
     private func sessionRuntimeError(_ notification: NSNotification) {
         guard
-            let session = notification.object as? AVCaptureSession,
+            let _ = notification.object as? AVCaptureSession,
             let errorValue = notification.userInfo?[AVCaptureSessionErrorKey] as? NSError else {
             return
         }

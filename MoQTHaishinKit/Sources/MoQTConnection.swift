@@ -63,7 +63,7 @@ public actor MoQTConnection {
             try await socket.connect(host, port: uri.port ?? Self.defaultPort)
             Task {
                 for await data in await socket.incoming {
-                    try? await didReceiveControlMessage(data)
+                    await didReceiveControlMessage(data)
                 }
             }
             Task {
@@ -193,7 +193,7 @@ public actor MoQTConnection {
             let type = try inputBuffer.getInt()
             let length = try inputBuffer.getInt()
             guard let message = try MoQTMessageType(rawValue: type)?.makeMessage(&inputBuffer) else {
-                try? inputBuffer.getData(length)
+                _ = try? inputBuffer.getData(length)
                 continuation?.resume(throwing: MoQTControlMessageError.notImplemented)
                 continuation = nil
                 return
@@ -208,7 +208,7 @@ public actor MoQTConnection {
                     largestGroupId: 0,
                     largestObjectId: 0,
                     subscribeParameters: message.subscribeParameters)
-                let result = try? await send(ok)
+                _ = try? await send(ok)
             default:
                 continuation?.resume(returning: message)
                 continuation = nil
@@ -226,7 +226,7 @@ public actor MoQTConnection {
             let type = try datagramBuffer.getInt()
             switch MoQTDataStreamType(rawValue: type) {
             case .streamHeaderSubgroup:
-                let message = try MoQTStreamHeaderSubgroup(&datagramBuffer)
+                let _ = try MoQTStreamHeaderSubgroup(&datagramBuffer)
                 while 0 < datagramBuffer.bytesAvailable {
                     objectStreamContinuation?.yield(try .init(&datagramBuffer))
                 }
