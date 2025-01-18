@@ -34,8 +34,8 @@ public actor RTMPConnection: NetworkConnection {
     public static let defaultWindowSizeS: Int64 = 250000
     /// The supported protocols are rtmp, rtmps, rtmpt and rtmps.
     public static let supportedProtocols: Set<String> = ["rtmp", "rtmps"]
-    /// The supported fourCcList are hvc1.
-    public static let supportedFourCcList = ["hvc1"]
+    /// The supported fourCcList.
+    public static let supportedFourCcList = [RTMPVideoFourCC.hevc.description, RTMPAudioFourCC.opus.description]
     /// The default RTMP port is 1935.
     public static let defaultPort: Int = 1935
     /// The default RTMPS port is 443.
@@ -50,6 +50,14 @@ public actor RTMPConnection: NetworkConnection {
     public static let defaultObjectEncoding: RTMPObjectEncoding = .amf0
     /// The default an rtmp request time out value (ms).
     public static let defaultRequestTimeout: UInt64 = 3000
+
+    static let videoFourCcInfoMap: AMFObject = [
+        RTMPVideoFourCC.hevc.description: FourCcInfoMask.canDecode.rawValue | FourCcInfoMask.canEncode.rawValue
+    ]
+
+    static let audioFourCcInfoMap: AMFObject = [
+        RTMPAudioFourCC.opus.description: FourCcInfoMask.canEncode.rawValue
+    ]
 
     private static let connectTransactionId = 1
 
@@ -132,6 +140,19 @@ public actor RTMPConnection: NetworkConnection {
 
     enum VideoFunction: UInt8 {
         case clientSeek = 1
+    }
+
+    enum FourCcInfoMask: Int {
+        case canDecode = 0x01
+        case canEncode = 0x02
+        case canForward = 0x04
+    }
+
+    enum CapsEx: Int {
+        case recoonect = 0x01
+        case multitrack = 0x02
+        case modEx = 0x04
+        case timestampNanoOffset = 0x08
     }
 
     /// The URL of .swf.

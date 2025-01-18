@@ -6,7 +6,7 @@ import AVFoundation
  * - seealso: https://developer.apple.com/library/ios/technotes/tn2236/_index.html
  */
 final class AudioCodec {
-    static let frameCamacity: UInt32 = 1024
+    static let defaultInputBuffersCursor = 0
 
     /// Specifies the settings for audio codec.
     var settings: AudioCodecSettings = .default {
@@ -32,8 +32,8 @@ final class AudioCodec {
             guard inputFormat != oldValue else {
                 return
             }
-            cursor = 0
             inputBuffers.removeAll()
+            inputBuffersCursor = Self.defaultInputBuffersCursor
             outputBuffers.removeAll()
             audioConverter = makeAudioConverter()
             for _ in 0..<settings.format.inputBufferCounts {
@@ -43,7 +43,8 @@ final class AudioCodec {
             }
         }
     }
-    private var cursor: Int = 0
+    private var audioTime = AudioTime()
+    private var ringBuffer: AudioRingBuffer?
     private var inputBuffers: [AVAudioBuffer] = []
     private var continuation: AsyncStream<(AVAudioBuffer, AVAudioTime)>.Continuation? {
         didSet {
@@ -52,6 +53,7 @@ final class AudioCodec {
     }
     private var outputBuffers: [AVAudioBuffer] = []
     private var audioConverter: AVAudioConverter?
+    private var inputBuffersCursor = AudioCodec.defaultInputBuffersCursor
 
     func append(_ sampleBuffer: CMSampleBuffer) {
         guard isRunning else {
@@ -91,33 +93,52 @@ final class AudioCodec {
             return
         }
         var error: NSError?
-        let outputBuffer = self.outputBuffer
-        let outputStatus = audioConverter.convert(to: outputBuffer, error: &error) { _, inputStatus in
-            switch self.inputBuffer {
-            case let inputBuffer as AVAudioCompressedBuffer:
-                inputBuffer.copy(audioBuffer)
-            case let inputBuffer as AVAudioPCMBuffer:
-                if !inputBuffer.copy(audioBuffer) {
-                    inputBuffer.muted(true)
+        if let audioBuffer = audioBuffer as? AVAudioPCMBuffer {
+            ringBuffer?.append(audioBuffer, when: when)
+            if !audioTime.hasAnchor {
+                audioTime.anchor(when)
+            }
+        }
+        var outputStatus: AVAudioConverterOutputStatus = .endOfStream
+        repeat {
+            let outputBuffer = self.outputBuffer
+            outputStatus = audioConverter.convert(to: outputBuffer, error: &error) { inNumberFrames, inputStatus in
+                switch self.inputBuffer {
+                case let inputBuffer as AVAudioCompressedBuffer:
+                    inputBuffer.copy(audioBuffer)
+                    inputStatus.pointee = .haveData
+                    return inputBuffer
+                case let inputBuffer as AVAudioPCMBuffer:
+                    if inNumberFrames <= (self.ringBuffer?.counts ?? 0) {
+                        _ = self.ringBuffer?.render(inNumberFrames, ioData: inputBuffer.mutableAudioBufferList)
+                        inputBuffer.frameLength = inNumberFrames
+                        inputStatus.pointee = .haveData
+                        self.audioTime.advanced(AVAudioFramePosition(inNumberFrames))
+                        return self.inputBuffer
+                    } else {
+                        inputStatus.pointee = .noDataNow
+                        return nil
+                    }
+                default:
+                    inputStatus.pointee = .noDataNow
+                    return nil
+                }
+            }
+            switch outputStatus {
+            case .haveData:
+                if audioTime.hasAnchor {
+                    continuation?.yield((outputBuffer, audioTime.at))
+                } else {
+                    continuation?.yield((outputBuffer, when))
+                }
+                inputBuffersCursor += 1
+                if inputBuffersCursor == inputBuffers.count {
+                    inputBuffersCursor = Self.defaultInputBuffersCursor
                 }
             default:
-                break
+                releaseOutputBuffer(outputBuffer)
             }
-            inputStatus.pointee = .haveData
-            return self.inputBuffer
-        }
-        switch outputStatus {
-        case .haveData:
-            continuation?.yield((outputBuffer, when))
-        case .error:
-            break
-        default:
-            break
-        }
-        cursor += 1
-        if cursor == inputBuffers.count {
-            cursor = 0
-        }
+        } while(outputStatus == .haveData && settings.format != .pcm)
     }
 
     private func makeInputBuffer() -> AVAudioBuffer? {
@@ -126,8 +147,9 @@ final class AudioCodec {
         }
         switch inputFormat.formatDescription.mediaSubType {
         case .linearPCM:
-            let buffer = AVAudioPCMBuffer(pcmFormat: inputFormat, frameCapacity: Self.frameCamacity)
-            buffer?.frameLength = Self.frameCamacity
+            let frameCapacity = settings.format.makeFramesPerPacket(inputFormat.sampleRate)
+            let buffer = AVAudioPCMBuffer(pcmFormat: inputFormat, frameCapacity: frameCapacity)
+            buffer?.frameLength = frameCapacity
             return buffer
         default:
             return AVAudioCompressedBuffer(format: inputFormat, packetCapacity: 1, maximumPacketSize: 1024)
@@ -145,6 +167,9 @@ final class AudioCodec {
         }
         let converter = AVAudioConverter(from: inputFormat, to: outputFormat)
         settings.apply(converter, oldValue: nil)
+        if inputFormat.formatDescription.mediaSubType == .linearPCM {
+            ringBuffer = AudioRingBuffer(inputFormat)
+        }
         return converter
     }
 }
@@ -170,7 +195,7 @@ extension AudioCodec: Codec {
     }
 
     private var inputBuffer: AVAudioBuffer {
-        return inputBuffers[cursor]
+        return inputBuffers[inputBuffersCursor]
     }
 }
 
@@ -180,6 +205,7 @@ extension AudioCodec: Runner {
         guard !isRunning else {
             return
         }
+        audioTime.reset()
         audioConverter?.reset()
         isRunning = true
     }
@@ -190,5 +216,6 @@ extension AudioCodec: Runner {
         }
         isRunning = false
         continuation = nil
+        ringBuffer = nil
     }
 }
