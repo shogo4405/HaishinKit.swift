@@ -38,7 +38,7 @@ enum RTMPAudioCodec: UInt8 {
     case g711A = 7
     /// The G.711 mu-law codec.
     case g711MU = 8
-    /// The signal FOURCC mode.
+    /// The signal FOURCC mode. E-RTMP.
     case exheader = 9
     /// The AAC codec.
     case aac = 10

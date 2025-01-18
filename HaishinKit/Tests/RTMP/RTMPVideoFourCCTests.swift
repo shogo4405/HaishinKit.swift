@@ -4,7 +4,7 @@ import Testing
 
 @testable import HaishinKit
 
-@Suite struct FLVVideoFourCCTests {
+@Suite struct RTMPVideoFourCCTests {
     @Test func main() {
         #expect("av01" == str4(n: Int(RTMPVideoFourCC.av1.rawValue)))
         #expect("hvc1" == str4(n: Int(RTMPVideoFourCC.hevc.rawValue)))

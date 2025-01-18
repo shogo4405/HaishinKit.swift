@@ -36,6 +36,11 @@ final class CameraIngestViewController: NSViewController {
             await netStreamSwitcher.setPreference(Preference.default)
             let stream = await netStreamSwitcher.stream
             if let stream {
+                
+                var audioSettings = AudioCodecSettings()
+                audioSettings.format = .opus
+                await stream.setAudioSettings(audioSettings)
+                
                 await stream.addOutput(lfView!)
                 await mixer.addOutput(stream)
             }

@@ -34,8 +34,8 @@ public actor RTMPConnection: NetworkConnection {
     public static let defaultWindowSizeS: Int64 = 250000
     /// The supported protocols are rtmp, rtmps, rtmpt and rtmps.
     public static let supportedProtocols: Set<String> = ["rtmp", "rtmps"]
-    /// The supported fourCcList are hvc1.
-    public static let supportedFourCcList = ["hvc1"]
+    /// The supported fourCcList.
+    public static let supportedFourCcList = [RTMPVideoFourCC.hevc.description, RTMPAudioFourCC.opus.description]
     /// The default RTMP port is 1935.
     public static let defaultPort: Int = 1935
     /// The default RTMPS port is 443.

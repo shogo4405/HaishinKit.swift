@@ -6,8 +6,6 @@ import AVFoundation
  * - seealso: https://developer.apple.com/library/ios/technotes/tn2236/_index.html
  */
 final class AudioCodec {
-    static let frameCamacity: UInt32 = 1024
-
     /// Specifies the settings for audio codec.
     var settings: AudioCodecSettings = .default {
         didSet {
@@ -44,6 +42,7 @@ final class AudioCodec {
         }
     }
     private var cursor: Int = 0
+    private var ringBuffer: AudioRingBuffer?
     private var inputBuffers: [AVAudioBuffer] = []
     private var continuation: AsyncStream<(AVAudioBuffer, AVAudioTime)>.Continuation? {
         didSet {
@@ -126,8 +125,9 @@ final class AudioCodec {
         }
         switch inputFormat.formatDescription.mediaSubType {
         case .linearPCM:
-            let buffer = AVAudioPCMBuffer(pcmFormat: inputFormat, frameCapacity: Self.frameCamacity)
-            buffer?.frameLength = Self.frameCamacity
+            let frameCapacity = settings.format.makeFramesPerPacket(inputFormat.sampleRate)
+            let buffer = AVAudioPCMBuffer(pcmFormat: inputFormat, frameCapacity: frameCapacity)
+            buffer?.frameLength = frameCapacity
             return buffer
         default:
             return AVAudioCompressedBuffer(format: inputFormat, packetCapacity: 1, maximumPacketSize: 1024)
