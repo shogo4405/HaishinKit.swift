@@ -41,7 +41,7 @@ final class IOVideoMixer<T: IOVideoMixerDelegate> {
             for screen in screens where screen.track == track {
                 screen.enqueue(sampleBuffer)
             }
-            if track == settings.mainTrack {
+            if track == settings.mainTrack && 0 < screen.targetTimestamp.value {
                 let diff = ceil((screen.targetTimestamp.value - sampleBuffer.presentationTimeStamp.seconds) * 10000) / 10000
                 screen.videoCaptureLatency.mutate { $0 = diff }
             }
