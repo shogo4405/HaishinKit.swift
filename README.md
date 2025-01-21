@@ -138,13 +138,10 @@ Please contains Info.plist.
 * NSCameraUsageDescription
 
 ## 🔧 Installation
-HaishinKit has a multi-module configuration. If you want to use the SRT protocol, please use SRTHaishinKit.
-|  | HaishinKit | SRTHaishinKit |
-| - | :- | :- |
-| SPM | https://github.com/shogo4405/HaishinKit.swift | https://github.com/shogo4405/HaishinKit.swift |
-| CocoaPods |<pre>def import_pods<br>  pod 'HaishinKit', '~> 2.0.0'<br>end</pre>|<pre>def import_pods<br>  pod 'SRTHaishinKit', '~> 2.0.0'<br>end</pre>|
-* SRTHaishinKit via CocoaPods supports only iOS and tvOS.
-* Discontinued support for Carthage. #1542
+* Using Swift Package Manager
+  - https://github.com/shogo4405/HaishinKit.swift
+* [Discontinued support for CocoaPods.](https://github.com/shogo4405/HaishinKit.swift/discussions/1672)
+* [Discontinued support for Carthage.](https://github.com/shogo4405/HaishinKit.swift/pull/1543)
 
 ## 📓 Settings
 ### 🔧 Prerequisites
