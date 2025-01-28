@@ -37,6 +37,10 @@ final class AudioRingBuffer {
         self.outputBuffer.frameLength = self.outputBuffer.frameCapacity
     }
 
+    func isDataAvailable(_ inNumberFrames: UInt32) -> Bool {
+        return inNumberFrames <= counts
+    }
+
     func append(_ sampleBuffer: CMSampleBuffer) {
         guard CMSampleBufferDataIsReady(sampleBuffer) else {
             return
