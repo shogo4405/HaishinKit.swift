@@ -677,9 +677,8 @@ public actor RTMPStream {
 
     /// Creates flv metadata for a stream.
     private func makeMetadata() -> AMFArray {
-        var metadata: AMFObject = [
-            "duration": 0
-        ]
+        // https://github.com/shogo4405/HaishinKit.swift/issues/1410
+        var metadata: AMFObject = ["duration": 0]
         if outgoing.videoInputFormat != nil {
             metadata["width"] = outgoing.videoSettings.videoSize.width
             metadata["height"] = outgoing.videoSettings.videoSize.height
