@@ -363,7 +363,7 @@ struct RTMPSharedObjectMessage: RTMPMessage {
  7.1.5. Audio Message (9)
  */
 struct RTMPAudioMessage: RTMPMessage {
-    static let AAC_HEADER: UInt8 =
+    static let aacHeader: UInt8 =
         RTMPAudioCodec.aac.rawValue << 4 |
         RTMPSoundRate.kHz44.rawValue << 2 |
         RTMPSoundSize.snd16bit.rawValue << 1 |
@@ -402,7 +402,7 @@ struct RTMPAudioMessage: RTMPMessage {
             guard let config = AudioSpecificConfig(formatDescription: formatDescription) else {
                 return nil
             }
-            var buffer = Data([Self.AAC_HEADER, RTMPAACPacketType.seq.rawValue])
+            var buffer = Data([Self.aacHeader, RTMPAACPacketType.seq.rawValue])
             buffer.append(contentsOf: config.bytes)
             self.payload = buffer
         }
@@ -421,7 +421,7 @@ struct RTMPAudioMessage: RTMPMessage {
             buffer.append(audioBuffer.data.assumingMemoryBound(to: UInt8.self), count: Int(audioBuffer.byteLength))
             self.payload = buffer
         default:
-            var buffer = Data([Self.AAC_HEADER, RTMPAACPacketType.raw.rawValue])
+            var buffer = Data([Self.aacHeader, RTMPAACPacketType.raw.rawValue])
             buffer.append(audioBuffer.data.assumingMemoryBound(to: UInt8.self), count: Int(audioBuffer.byteLength))
             self.payload = buffer
         }
