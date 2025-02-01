@@ -6,6 +6,7 @@ import AVFoundation
  * - seealso: https://developer.apple.com/library/ios/technotes/tn2236/_index.html
  */
 final class AudioCodec {
+    static let defaultFrameCapacity: UInt32 = 1024
     static let defaultInputBuffersCursor = 0
 
     /// Specifies the settings for audio codec.
@@ -96,7 +97,7 @@ final class AudioCodec {
         if let audioBuffer = audioBuffer as? AVAudioPCMBuffer {
             ringBuffer?.append(audioBuffer, when: when)
             if !audioTime.hasAnchor {
-                audioTime.anchor(when)
+                audioTime.anchor(when.makeTime(), sampleRate: audioConverter.outputFormat.sampleRate)
             }
         }
         var outputStatus: AVAudioConverterOutputStatus = .endOfStream
@@ -109,12 +110,11 @@ final class AudioCodec {
                     inputStatus.pointee = .haveData
                     return inputBuffer
                 case let inputBuffer as AVAudioPCMBuffer:
-                    if inNumberFrames <= (self.ringBuffer?.counts ?? 0) {
-                        _ = self.ringBuffer?.render(inNumberFrames, ioData: inputBuffer.mutableAudioBufferList)
+                    if self.ringBuffer?.isDataAvailable(inNumberFrames) == true {
                         inputBuffer.frameLength = inNumberFrames
+                        _ = self.ringBuffer?.render(inNumberFrames, ioData: inputBuffer.mutableAudioBufferList)
                         inputStatus.pointee = .haveData
-                        self.audioTime.advanced(AVAudioFramePosition(inNumberFrames))
-                        return self.inputBuffer
+                        return inputBuffer
                     } else {
                         inputStatus.pointee = .noDataNow
                         return nil
@@ -127,6 +127,7 @@ final class AudioCodec {
             switch outputStatus {
             case .haveData:
                 if audioTime.hasAnchor {
+                    audioTime.advanced(AVAudioFramePosition(audioConverter.outputFormat.streamDescription.pointee.mFramesPerPacket))
                     continuation?.yield((outputBuffer, audioTime.at))
                 } else {
                     continuation?.yield((outputBuffer, when))
@@ -147,9 +148,8 @@ final class AudioCodec {
         }
         switch inputFormat.formatDescription.mediaSubType {
         case .linearPCM:
-            let frameCapacity = settings.format.makeFramesPerPacket(inputFormat.sampleRate)
-            let buffer = AVAudioPCMBuffer(pcmFormat: inputFormat, frameCapacity: frameCapacity)
-            buffer?.frameLength = frameCapacity
+            let buffer = AVAudioPCMBuffer(pcmFormat: inputFormat, frameCapacity: Self.defaultFrameCapacity)
+            buffer?.frameLength = Self.defaultFrameCapacity
             return buffer
         default:
             return AVAudioCompressedBuffer(format: inputFormat, packetCapacity: 1, maximumPacketSize: 1024)
@@ -159,16 +159,16 @@ final class AudioCodec {
     private func makeAudioConverter() -> AVAudioConverter? {
         guard
             let inputFormat,
-            let outputFormat = settings.format.makeOutputAudioFormat(inputFormat) else {
+            let outputFormat = settings.format.makeOutputAudioFormat(inputFormat, sampleRate: settings.sampleRate) else {
             return nil
-        }
-        if logger.isEnabledFor(level: .info) {
-            logger.info("inputFormat:", inputFormat, ",outputFormat:", outputFormat)
         }
         let converter = AVAudioConverter(from: inputFormat, to: outputFormat)
         settings.apply(converter, oldValue: nil)
         if inputFormat.formatDescription.mediaSubType == .linearPCM {
             ringBuffer = AudioRingBuffer(inputFormat)
+        }
+        if logger.isEnabledFor(level: .info) {
+            logger.info("converter:", converter ?? "nil", ",inputFormat:", inputFormat, ",outputFormat:", outputFormat)
         }
         return converter
     }
