@@ -3,8 +3,6 @@ import HaishinKit
 import libsrt
 import Logboard
 
-private let kSRTSOcket_payloadSize: Int = 1316
-
 final actor SRTSocket {
     static let payloadSize: Int = 1316
 
@@ -154,7 +152,7 @@ final actor SRTSocket {
     }
 
     func send(_ data: Data) {
-        for data in data.chunk(kSRTSOcket_payloadSize) {
+        for data in data.chunk(Self.payloadSize) {
             queueBytesOut += data.count
             outputs?.yield(data)
         }

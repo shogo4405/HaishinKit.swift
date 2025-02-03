@@ -72,3 +72,13 @@ Task {
 }
 ```
 
+## Test
+### ffplay as a SRT service for ingest HaishinKit.
+```sh
+$ ffplay -analyzeduration 100 -i 'srt://${YOUR_IP_ADDRESS}?mode=listener'
+```
+### ffmpeg as a SRT service for playback HaishinKit.
+```sh
+ffmpeg -stream_loop -1 -re -i input.mp4 -c copy -f mpegts 'srt://0.0.0.0:9998?mode=listener'
+```
+
