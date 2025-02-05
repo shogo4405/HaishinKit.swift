@@ -461,6 +461,8 @@ struct RTMPAudioMessage: RTMPMessage {
  7.1.5. Video Message (9)
  */
 struct RTMPVideoMessage: RTMPMessage {
+    static let ctsOffset = 0.066
+
     // MARK: RTMPMessage
     let type: RTMPMessageType = .video
     let streamId: UInt32
@@ -526,7 +528,7 @@ struct RTMPVideoMessage: RTMPMessage {
         }
     }
 
-    init?(streamId: UInt32, timestamp: UInt32, compositionTime: Int32, sampleBuffer: CMSampleBuffer?) {
+    init?(streamId: UInt32, timestamp: UInt32, sampleBuffer: CMSampleBuffer?) {
         guard let sampleBuffer, let data = try? sampleBuffer.dataBuffer?.dataBytes() else {
             return nil
         }
@@ -534,12 +536,14 @@ struct RTMPVideoMessage: RTMPMessage {
         self.timestamp = timestamp
         let keyframe = !sampleBuffer.isNotSync
         switch sampleBuffer.formatDescription?.mediaSubType {
-        case .h264?:
+        case .h264:
+            let compositionTime = sampleBuffer.getCompositionTime(Self.ctsOffset)
             var buffer = Data([((keyframe ? RTMPFrameType.key.rawValue : RTMPFrameType.inter.rawValue) << 4) | RTMPVideoCodec.avc.rawValue, RTMPAVCPacketType.nal.rawValue])
             buffer.append(contentsOf: compositionTime.bigEndian.data[1..<4])
             buffer.append(data)
             payload = buffer
-        case .hevc?:
+        case .hevc:
+            let compositionTime = sampleBuffer.getCompositionTime(Self.ctsOffset)
             var buffer = Data([0b10000000 | ((keyframe ? RTMPFrameType.key.rawValue : RTMPFrameType.inter.rawValue) << 4) | RTMPVideoPacketType.codedFrames.rawValue, 0x68, 0x76, 0x63, 0x31])
             buffer.append(contentsOf: compositionTime.bigEndian.data[1..<4])
             buffer.append(data)
