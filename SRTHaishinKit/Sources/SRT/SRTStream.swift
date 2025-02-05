@@ -29,7 +29,7 @@ public actor SRTStream {
         outputs.removeAll()
     }
 
-    /// Sends streaming audio, vidoe and data message from client.
+    /// Sends streaming audio and video from client.
     public func publish(_ name: String? = "") async {
         guard let name else {
             switch readyState {
@@ -74,7 +74,7 @@ public actor SRTStream {
         }
     }
 
-    /// Playback streaming audio and video message from server.
+    /// Playback streaming audio and video from server.
     public func play(_ name: String? = "") async {
         guard let name else {
             switch readyState {
@@ -107,6 +107,7 @@ public actor SRTStream {
         writer.clear()
         reader.clear()
         outgoing.stopRunning()
+        action = nil
         Task { await incoming.stopRunning() }
         readyState = .idle
     }

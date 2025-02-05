@@ -6,16 +6,21 @@ import Logboard
 final actor SRTSocket {
     static let payloadSize: Int = 1316
 
+    enum Error: Swift.Error {
+        case notConnected
+        case illegalState(message: String)
+    }
+
     var inputs: AsyncStream<Data> {
-        AsyncStream<Data> { condination in
+        AsyncStream<Data> { continuation in
             // If Task.detached is not used, closing will result in a deadlock.
             Task.detached {
                 while await self.connected {
                     let result = await self.recvmsg()
-                    if 0 < result {
-                        condination.yield(await self.incomingBuffer.subdata(in: 0..<Data.Index(result)))
+                    if 0 <= result {
+                        continuation.yield(await self.incomingBuffer.subdata(in: 0..<Data.Index(result)))
                     } else {
-                        condination.finish()
+                        continuation.finish()
                     }
                 }
             }
@@ -23,21 +28,20 @@ final actor SRTSocket {
     }
 
     var accept: AsyncStream<SRTSocket> {
-        AsyncStream<SRTSocket> { condination in
+        AsyncStream<SRTSocket> { continuation in
             Task.detached {
                 repeat {
                     do {
                         let client = try await self.accept()
-                        condination.yield(client)
+                        continuation.yield(client)
                         try await Task.sleep(nanoseconds: 1_000_000_000)
                     } catch {
-                        condination.finish()
+                        continuation.finish()
                     }
                 } while await self.connected
             }
         }
     }
-
     private(set) var mode: SRTMode = .caller
     private(set) var perf: CBytePerfMon = .init()
     private(set) var socket: SRTSOCKET = SRT_INVALID_SOCK
@@ -72,13 +76,18 @@ final actor SRTSocket {
             }
         }
     }
+
     private(set) var options: [SRTSocketOption: any Sendable] = [:]
-    private(set) var connected = false
+    private var outputs: AsyncStream<Data>.Continuation? {
+        didSet {
+            oldValue?.finish()
+        }
+    }
+    private var connected = false
+    private var windowSizeC: Int32 = 1024 * 4
     private var totalBytesIn: Int = 0
     private var totalBytesOut: Int = 0
     private var queueBytesOut: Int = 0
-    private var windowSizeC: Int32 = 1024 * 4
-    private var outputs: AsyncStream<Data>.Continuation?
     private lazy var incomingBuffer: Data = .init(count: Int(windowSizeC))
 
     init() {
@@ -148,10 +157,16 @@ final actor SRTSocket {
             return
         }
         srt_close(socket)
+        status = srt_getsockstate(socket)
         socket = SRT_INVALID_SOCK
+        outputs = nil
+        connected = false
     }
 
-    func send(_ data: Data) {
+    func send(_ data: Data) throws {
+        guard connected else {
+            throw Error.notConnected
+        }
         for data in data.chunk(Self.payloadSize) {
             queueBytesOut += data.count
             outputs?.yield(data)
@@ -176,13 +191,18 @@ final actor SRTSocket {
 
     private func didConnected() {
         connected = true
-        let (stream, continuation) = AsyncStream<Data>.makeStream()
-        outputs = continuation
+        let stream = AsyncStream<Data> { continuation in
+            self.outputs = continuation
+        }
         Task {
             for await data in stream where connected {
-                _ = sendmsg2(data)
-                totalBytesOut += data.count
-                queueBytesOut -= data.count
+                let result = sendmsg2(data)
+                if 0 <= result {
+                    totalBytesOut += data.count
+                    queueBytesOut -= data.count
+                } else {
+                    close()
+                }
             }
         }
     }
@@ -190,7 +210,7 @@ final actor SRTSocket {
     private func makeSocketError() -> SRTError {
         let error_message = String(cString: srt_getlasterror_str())
         logger.error(error_message)
-        return SRTError.illegalState(message: error_message)
+        return .illegalState(message: error_message)
     }
 
     private func accept() async throws -> SRTSocket {
