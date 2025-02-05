@@ -78,7 +78,11 @@ final actor SRTSocket {
     private var totalBytesOut: Int = 0
     private var queueBytesOut: Int = 0
     private var windowSizeC: Int32 = 1024 * 4
-    private var outputs: AsyncStream<Data>.Continuation?
+    private var outputs: AsyncStream<Data>.Continuation? {
+        didSet {
+            oldValue?.finish()
+        }
+    }
     private lazy var incomingBuffer: Data = .init(count: Int(windowSizeC))
 
     init() {
@@ -148,7 +152,10 @@ final actor SRTSocket {
             return
         }
         srt_close(socket)
+        status = srt_getsockstate(socket)
         socket = SRT_INVALID_SOCK
+        outputs = nil
+        connected = false
     }
 
     func send(_ data: Data) {
@@ -176,13 +183,18 @@ final actor SRTSocket {
 
     private func didConnected() {
         connected = true
-        let (stream, continuation) = AsyncStream<Data>.makeStream()
-        outputs = continuation
+        let stream = AsyncStream<Data> { continuation in
+            self.outputs = continuation
+        }
         Task {
             for await data in stream where connected {
-                _ = sendmsg2(data)
-                totalBytesOut += data.count
-                queueBytesOut -= data.count
+                let result = sendmsg2(data)
+                if 0 <= result {
+                    totalBytesOut += data.count
+                    queueBytesOut -= data.count
+                } else {
+                    close()
+                }
             }
         }
     }
