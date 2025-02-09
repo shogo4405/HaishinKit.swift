@@ -244,7 +244,6 @@ enum RTMPVideoCodec: UInt8 {
     }
 }
 
-
 extension CMSampleBuffer {
     func getCompositionTime(_ offset: TimeInterval) -> Int32 {
         guard decodeTimeStamp.isValid else {

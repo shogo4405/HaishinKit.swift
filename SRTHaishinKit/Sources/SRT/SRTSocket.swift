@@ -72,7 +72,7 @@ final actor SRTSocket {
             }
         }
     }
-    private(set) var options: [SRTSocketOption: Any] = [:]
+    private(set) var options: [SRTSocketOption: any Sendable] = [:]
     private(set) var connected = false
     private var totalBytesIn: Int = 0
     private var totalBytesOut: Int = 0

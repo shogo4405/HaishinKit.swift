@@ -1,7 +1,14 @@
 import Foundation
 import libsrt
 
-public enum SRTSocketOption: String, Sendable {
+enum SRTSocketOption: String, Sendable {
+    private static let boolStringLiterals: [String: Bool] = [
+        "1": true,
+        "on": true,
+        "yes": true,
+        "true": true
+    ]
+
     static func from(uri: URL?) -> [SRTSocketOption: any Sendable] {
         guard let uri = uri else {
             return [:]
@@ -9,10 +16,51 @@ public enum SRTSocketOption: String, Sendable {
         let queryItems = getQueryItems(uri: uri)
         var options: [SRTSocketOption: any Sendable] = [:]
         for item in queryItems {
-            guard let option = SRTSocketOption(rawValue: item.key) else { continue }
-            options[option] = item.value
+            guard let option = SRTSocketOption(rawValue: item.key) else {
+                continue
+            }
+            switch option.type {
+            case .string:
+                options[option] = item.value
+            case .int:
+                options[option] = Int32(item.value)
+            case .int64:
+                options[option] = Int(item.value)
+            case .bool:
+                let key = String(describing: item.value).lowercased()
+                options[option] = boolStringLiterals[key] ?? false
+            case .enumeration:
+                break
+            }
         }
         return options
+    }
+
+    static func configure(_ socket: SRTSOCKET, binding: Binding, options: [SRTSocketOption: any Sendable]) -> [String] {
+        var failures: [String] = []
+        for (key, value) in options where key.binding == binding {
+            do {
+                try key.setOption(socket, value: value)
+            } catch {
+                failures.append(key.rawValue)
+            }
+        }
+        return failures
+    }
+
+    static func getQueryItems(uri: URL) -> [String: String] {
+        let url = uri.absoluteString
+        if !url.contains("?") {
+            return [:]
+        }
+        let queryString = url.split(separator: "?")[1]
+        let queries = queryString.split(separator: "&")
+        var paramsReturn: [String: String] = [:]
+        for q in queries {
+            let query = q.split(separator: "=", maxSplits: 1)
+            paramsReturn[String(query[0])] = String(query[1])
+        }
+        return paramsReturn
     }
 
     enum `Type`: Int {
@@ -21,6 +69,21 @@ public enum SRTSocketOption: String, Sendable {
         case int64
         case bool
         case enumeration
+
+        var size: Int {
+            switch self {
+            case .string:
+                return 512
+            case .int:
+                return MemoryLayout<Int32>.size
+            case .int64:
+                return MemoryLayout<Int64>.size
+            case .bool:
+                return MemoryLayout<Bool>.size
+            case .enumeration:
+                return MemoryLayout<Int32>.size
+            }
+        }
     }
 
     enum Binding: Int {
@@ -356,84 +419,75 @@ public enum SRTSocketOption: String, Sendable {
         switch self {
         case .transtype:
             return [
-                "live": SRTT_LIVE,
-                "file": SRTT_FILE
+                "live": Int32(SRTT_LIVE.rawValue),
+                "file": Int32(SRTT_FILE.rawValue)
             ]
         default:
             return nil
         }
     }
 
-    func setOption(_ socket: SRTSOCKET, value: Any) -> Bool {
+    func setOption(_ socket: SRTSOCKET, value: any Sendable) throws {
         guard let data = data(value) else {
-            return false
+            throw SRTError.invalidOption(message: String(cString: srt_getlasterror_str()))
         }
         let result: Int32 = data.withUnsafeBytes { pointer in
             guard let buffer = pointer.baseAddress else {
                 return -1
             }
-            return srt_setsockopt(socket, 0, symbol, buffer, Int32(data.count))
+            return srt_setsockflag(socket, symbol, buffer, Int32(data.count))
         }
-        return result != -1
+        if result < 0 {
+            throw SRTError.invalidOption(message: String(cString: srt_getlasterror_str()))
+        }
     }
 
-    func data(_ value: Any) -> Data? {
+    func getOption(_ socket: SRTSOCKET) throws -> Data {
+        var data = Data(repeating: 0, count: type.size)
+        var length = Int32(type.size)
+        let result: Int32 = data.withUnsafeMutableBytes {
+            guard let buffer = $0.baseAddress else {
+                return -1
+            }
+            return srt_getsockflag(socket, symbol, buffer, &length)
+        }
+        if result < 0 {
+            throw SRTError.invalidOption(message: String(cString: srt_getlasterror_str()))
+        }
+        return data.subdata(in: 0..<Data.Index(length))
+    }
+
+    private func data(_ value: any Sendable) -> Data? {
         switch type {
         case .string:
             return String(describing: value).data(using: .utf8)
         case .int:
-            var v: Int32 = 0
-            if let value = value as? Int {
-                v = Int32(value)
-            }
-            return .init(Data(bytes: &v, count: MemoryLayout.size(ofValue: v)))
-        case .int64:
-            guard var v = value as? Int64 else {
+            guard var value = value as? Int32 else {
                 return nil
             }
-            return .init(Data(bytes: &v, count: MemoryLayout.size(ofValue: v)))
-        case .bool:
-            var v: Int32 = 0
-            if let value = value as? Bool {
-                v = value ? 1 : 0
+            return .init(bytes: &value, count: type.size)
+        case .int64:
+            guard var value = value as? Int64 else {
+                return nil
             }
-            return .init(Data(bytes: &v, count: MemoryLayout.size(ofValue: v)))
+            return .init(bytes: &value, count: type.size)
+        case .bool:
+            guard var value = value as? Bool else {
+                return nil
+            }
+            return .init(bytes: &value, count: type.size)
         case .enumeration:
             switch self {
             case .transtype:
-                guard let key = value as? String else {
+                guard
+                    let key = value as? String,
+                    var value = valmap?[key] as? Int32 else {
                     return nil
                 }
-                guard var v = valmap?[key] as? SRT_TRANSTYPE else {
-                    return nil
-                }
-                return .init(Data(bytes: &v, count: MemoryLayout.size(ofValue: value)))
+                return .init(bytes: &value, count: MemoryLayout.size(ofValue: value))
             default:
                 return nil
             }
         }
-    }
-
-    static func configure(_ socket: SRTSOCKET, binding: Binding, options: [SRTSocketOption: Any]) -> [String] {
-        var failures: [String] = []
-        for (key, value) in options where key.binding == binding {
-            if !key.setOption(socket, value: value) { failures.append(key.rawValue) }
-        }
-        return failures
-    }
-
-    static func getQueryItems(uri: URL) -> [String: String] {
-        let url = uri.absoluteString
-        if !url.contains("?") {
-            return [:]
-        }
-        let queryString = url.split(separator: "?")[1]
-        let queries = queryString.split(separator: "&")
-        var paramsReturn: [String: String] = [:]
-        for q in queries {
-            let query = q.split(separator: "=", maxSplits: 1)
-            paramsReturn[String(query[0])] = String(query[1])
-        }
-        return paramsReturn
     }
 }
