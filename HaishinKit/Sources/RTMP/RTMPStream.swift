@@ -735,11 +735,10 @@ extension RTMPStream: HKStream {
             if sampleBuffer.formatDescription?.isCompressed == true {
                 do {
                     let decodeTimeStamp = sampleBuffer.decodeTimeStamp.isValid ? sampleBuffer.decodeTimeStamp : sampleBuffer.presentationTimeStamp
-                    let compositionTime = videoTimestamp.getCompositionTime(sampleBuffer)
                     let timedelta = try videoTimestamp.update(decodeTimeStamp)
                     frameCount += 1
                     videoFormat = sampleBuffer.formatDescription
-                    guard let message = RTMPVideoMessage(streamId: id, timestamp: timedelta, compositionTime: compositionTime, sampleBuffer: sampleBuffer) else {
+                    guard let message = RTMPVideoMessage(streamId: id, timestamp: timedelta, sampleBuffer: sampleBuffer) else {
                         return
                     }
                     doOutput(.one, chunkStreamId: .video, message: message)

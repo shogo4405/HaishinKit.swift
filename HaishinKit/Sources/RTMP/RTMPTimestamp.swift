@@ -7,7 +7,6 @@ protocol RTMPTimeConvertible {
 }
 
 private let kRTMPTimestamp_defaultTimeInterval: TimeInterval = 0
-private let kRTMPTimestamp_compositiionTimeOffset = CMTime(value: 3, timescale: 30)
 
 struct RTMPTimestamp<T: RTMPTimeConvertible> {
     enum Error: Swift.Error {
@@ -55,14 +54,6 @@ struct RTMPTimestamp<T: RTMPTimeConvertible> {
         startedAt = kRTMPTimestamp_defaultTimeInterval
         updatedAt = kRTMPTimestamp_defaultTimeInterval
         timedeltaFraction = kRTMPTimestamp_defaultTimeInterval
-    }
-
-    func getCompositionTime(_ sampleBuffer: CMSampleBuffer) -> Int32 {
-        guard sampleBuffer.decodeTimeStamp.isValid, sampleBuffer.decodeTimeStamp != sampleBuffer.presentationTimeStamp else {
-            return 0
-        }
-        let compositionTime = (sampleBuffer.presentationTimeStamp + kRTMPTimestamp_compositiionTimeOffset).seconds - updatedAt
-        return Int32(compositionTime * 1000)
     }
 }
 
