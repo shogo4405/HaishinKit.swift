@@ -62,6 +62,12 @@ let package = Package(
                 .process("Asset")
             ],
             swiftSettings: swiftSettings
+        ),
+        .testTarget(
+            name: "SRTHaishinKitTests",
+            dependencies: ["SRTHaishinKit"],
+            path: "SRTHaishinKit/Tests",
+            swiftSettings: swiftSettings
         )
     ],
     swiftLanguageModes: [.v6, .v5]
