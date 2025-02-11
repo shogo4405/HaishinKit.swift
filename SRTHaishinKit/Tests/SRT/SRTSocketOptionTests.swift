@@ -44,13 +44,13 @@ import libsrt
 
     @Test func transtype() throws {
         /*
-        // ToDo
-        let socket = srt_create_socket()
-        let transtype = "live"
-        var result = SRTT_FILE.rawValue
-        try SRTSocketOption.transtype.setOption(socket, value: transtype)
-        print(try SRTSocketOption.transtype.getOption(socket).bytes)
-        #expect(try SRTSocketOption.transtype.getOption(socket) == Data(bytes: &result, count: MemoryLayout<Int32>.size))
-        */
+         // ToDo
+         let socket = srt_create_socket()
+         let transtype = "live"
+         var result = SRTT_FILE.rawValue
+         try SRTSocketOption.transtype.setOption(socket, value: transtype)
+         print(try SRTSocketOption.transtype.getOption(socket).bytes)
+         #expect(try SRTSocketOption.transtype.getOption(socket) == Data(bytes: &result, count: MemoryLayout<Int32>.size))
+         */
     }
 }

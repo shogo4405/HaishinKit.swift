@@ -31,11 +31,7 @@ public actor SRTConnection: NetworkConnection {
     /// The SRT's performance data.
     public var performanceData: SRTPerformanceData? {
         get async {
-            guard let socket else {
-                return nil
-            }
-            _ = await socket.bstats()
-            return await SRTPerformanceData(mon: socket.perf)
+            return await socket?.performanceData
         }
     }
 
@@ -115,11 +111,15 @@ public actor SRTConnection: NetworkConnection {
     }
 
     func send(_ data: Data) async {
-        switch mode {
-        case .caller:
-            await socket?.send(data)
-        case .listener:
-            await clients.first?.send(data)
+        do {
+            switch mode {
+            case .caller:
+                try await socket?.send(data)
+            case .listener:
+                try? await clients.first?.send(data)
+            }
+        } catch {
+            try? await close()
         }
     }
 
