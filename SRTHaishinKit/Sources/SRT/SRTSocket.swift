@@ -196,7 +196,7 @@ final actor SRTSocket {
         }
         Task {
             for await data in stream where connected {
-                let result = sendmsg2(data)
+                let result = sendmsg(data)
                 if 0 <= result {
                     totalBytesOut += data.count
                     queueBytesOut -= data.count
@@ -219,12 +219,12 @@ final actor SRTSocket {
     }
 
     @inline(__always)
-    private func sendmsg2(_ data: Data) -> Int32 {
+    private func sendmsg(_ data: Data) -> Int32 {
         return data.withUnsafeBytes { pointer in
             guard let buffer = pointer.baseAddress?.assumingMemoryBound(to: CChar.self) else {
                 return SRT_ERROR
             }
-            return srt_sendmsg2(socket, buffer, Int32(data.count), nil)
+            return srt_sendmsg(socket, buffer, Int32(data.count), -1, 0)
         }
     }
 
