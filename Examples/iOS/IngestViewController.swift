@@ -51,6 +51,13 @@ final class IngestViewController: UIViewController {
                 if let view = view as? (any HKStreamOutput) {
                     await stream.addOutput(view)
                 }
+                await stream.setVideoSettings(.init(
+                    videoSize: .init(width: 1080, height: 1920),
+                    bitRate: 4194304,
+                    profileLevel: kVTProfileLevel_HEVC_Main_AutoLevel as String,
+                    allowFrameReordering: false,
+                    dataRateLimits: [0, 0]
+                ))
             }
         }
 

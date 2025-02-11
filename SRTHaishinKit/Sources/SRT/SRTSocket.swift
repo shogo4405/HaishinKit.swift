@@ -241,6 +241,7 @@ extension SRTSocket: NetworkTransportReporter {
     func makeNetworkTransportReport() -> NetworkTransportReport {
         _ = bstats()
         let performanceData = self.performanceData
+        logger.info(performanceData)
         return .init(
             queueBytesOut: Int(performanceData.byteSndBuf),
             totalBytesIn: Int(performanceData.byteSentTotal),
