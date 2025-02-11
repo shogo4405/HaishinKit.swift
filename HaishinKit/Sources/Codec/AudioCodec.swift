@@ -206,6 +206,7 @@ extension AudioCodec: Runner {
             return
         }
         audioTime.reset()
+        ringBuffer?.reset()
         audioConverter?.reset()
         isRunning = true
     }
@@ -216,6 +217,5 @@ extension AudioCodec: Runner {
         }
         isRunning = false
         continuation = nil
-        ringBuffer = nil
     }
 }
