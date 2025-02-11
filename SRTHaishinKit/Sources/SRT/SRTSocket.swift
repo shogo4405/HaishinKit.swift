@@ -42,6 +42,10 @@ final actor SRTSocket {
             }
         }
     }
+
+    var performanceData: SRTPerformanceData {
+        return .init(mon: perf)
+    }
     private(set) var mode: SRTMode = .caller
     private(set) var perf: CBytePerfMon = .init()
     private(set) var socket: SRTSOCKET = SRT_INVALID_SOCK
@@ -85,9 +89,6 @@ final actor SRTSocket {
     }
     private var connected = false
     private var windowSizeC: Int32 = 1024 * 4
-    private var totalBytesIn: Int = 0
-    private var totalBytesOut: Int = 0
-    private var queueBytesOut: Int = 0
     private lazy var incomingBuffer: Data = .init(count: Int(windowSizeC))
 
     init() {
@@ -168,7 +169,6 @@ final actor SRTSocket {
             throw Error.notConnected
         }
         for data in data.chunk(Self.payloadSize) {
-            queueBytesOut += data.count
             outputs?.yield(data)
         }
     }
@@ -182,7 +182,7 @@ final actor SRTSocket {
         return true
     }
 
-    func bstats() -> Int32 {
+    private func bstats() -> Int32 {
         guard socket != SRT_INVALID_SOCK else {
             return SRT_ERROR
         }
@@ -197,10 +197,7 @@ final actor SRTSocket {
         Task {
             for await data in stream where connected {
                 let result = sendmsg(data)
-                if 0 <= result {
-                    totalBytesOut += data.count
-                    queueBytesOut -= data.count
-                } else {
+                if result == -1 {
                     close()
                 }
             }
@@ -230,24 +227,24 @@ final actor SRTSocket {
 
     @inline(__always)
     private func recvmsg() -> Int32 {
-        let result = incomingBuffer.withUnsafeMutableBytes { pointer in
+        return incomingBuffer.withUnsafeMutableBytes { pointer in
             guard let buffer = pointer.baseAddress?.assumingMemoryBound(to: CChar.self) else {
                 return SRT_ERROR
             }
             return srt_recvmsg(socket, buffer, windowSizeC)
         }
-        totalBytesIn += Int(result)
-        return result
     }
 }
 
 extension SRTSocket: NetworkTransportReporter {
     // MARK: NetworkTransportReporter
     func makeNetworkTransportReport() -> NetworkTransportReport {
+        _ = bstats()
+        let performanceData = self.performanceData
         return .init(
-            queueBytesOut: queueBytesOut,
-            totalBytesIn: totalBytesIn,
-            totalBytesOut: totalBytesOut
+            queueBytesOut: Int(performanceData.byteSndBuf),
+            totalBytesIn: Int(performanceData.byteSentTotal),
+            totalBytesOut: Int(performanceData.byteRecvTotal)
         )
     }
 

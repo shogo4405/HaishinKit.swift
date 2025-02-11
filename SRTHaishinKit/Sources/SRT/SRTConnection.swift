@@ -31,11 +31,7 @@ public actor SRTConnection: NetworkConnection {
     /// The SRT's performance data.
     public var performanceData: SRTPerformanceData? {
         get async {
-            guard let socket else {
-                return nil
-            }
-            _ = await socket.bstats()
-            return await SRTPerformanceData(mon: socket.perf)
+            return await socket?.performanceData
         }
     }
 
