@@ -89,6 +89,13 @@ import Testing
         }
     }
 
+    @Test func chunkSize() {
+        let buffer = RTMPChunkBuffer()
+        buffer.chunkSize = 8192
+        buffer.chunkSize = 128
+        buffer.chunkSize = 8192
+    }
+
     @Test func write() {
         let buffer = RTMPChunkBuffer()
         let connection = RTMPCommandMessage(
