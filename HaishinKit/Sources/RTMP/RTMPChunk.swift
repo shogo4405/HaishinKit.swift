@@ -132,7 +132,9 @@ final class RTMPChunkBuffer {
                 return
             }
             let length = chunkSize - data.count
-            data += Data(count: length + Self.headerSize)
+            if 0 < length {
+                data += Data(count: length + Self.headerSize)
+            }
         }
     }
 
