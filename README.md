@@ -8,7 +8,7 @@
 
 * Camera and Microphone streaming library via RTMP and SRT for iOS, macOS, tvOS and visionOS.
 * README.md contains unreleased content, which can be tested on the main branch.
-* [API Documentation](https://docs.haishinkit.com/swift/latest/)
+* [API Documentation](https://docs.haishinkit.com/swift/latest/documentation/haishinkit/)
 
 ## 💖 Sponsors
 Do you need additional support? Technical support on Issues and Discussions is provided only to contributors and academic researchers of HaishinKit. By becoming a sponsor, we can provide the support you need.
@@ -28,7 +28,7 @@ Project name    |Notes       |License
 [HaishinKit for Flutter.](https://github.com/shogo4405/HaishinKit.dart)|Camera and Microphone streaming library via RTMP for Flutter.|[BSD 3-Clause "New" or "Revised" License](https://github.com/shogo4405/HaishinKit.dart/blob/master/LICENSE.md)
 
 ## 🎨 Features
-### ✏️ [RTMP](https://github.com/shogo4405/HaishinKit.swift/tree/main/HaishinKit)
+### ✏️ [RTMP](HaishinKit/Sources/Docs.docc/index.md)
 - [x] Authentication
 - [x] Publish and Recording
 - [x] _Playback (Beta)_
@@ -42,7 +42,7 @@ Project name    |Notes       |License
 - [x] ReplayKit Live as a Broadcast Upload Extension
 - [x] [Enhanced RTMP](https://github.com/veovera/enhanced-rtmp)
 
-### ✏️ [SRT(beta)](https://github.com/shogo4405/HaishinKit.swift/tree/main/SRTHaishinKit)
+### ✏️ [SRT(beta)](SRTHaishinKit/Sources/Docs.docc/index.md)
 - [x] Publish and Recording (H264/HEVC/AAC)
 - [x] Playback(beta)
 - [ ] mode
@@ -50,7 +50,7 @@ Project name    |Notes       |License
   - [x] listener
   - [ ] rendezvous
 
-### ✏️ [MOQT(alpha)](https://github.com/shogo4405/HaishinKit.swift/tree/main/MoQTHaishinKit)
+### ✏️ [MOQT(alpha)](MoQTHaishinKit/Sources/Docs.docc/index.md)
 > [!NOTE]
 > I am working on a preliminary implementation of MOQT for research purposes. If you're interested, please check out the repository.
 
@@ -172,7 +172,7 @@ await mixer.configuration { session in
 ```
 
 ### 🔊 Audio
-#### [Device](https://docs.haishinkit.com/swift/latest/Classes/AudioDeviceUnit.html)
+#### [Device](https://docs.haishinkit.com/swift/latest/documentation/haishinkit/audiodeviceunit/)
 Specifies the audio device settings.
 ```swift
 let front = AVCaptureDevice.default(for: .audio)
@@ -180,7 +180,7 @@ let front = AVCaptureDevice.default(for: .audio)
 try? await mixer.attachAudio(front, track: 0) { audioDeviceUnit in }
 ```
 
-#### [AudioMixerSettings](https://docs.haishinkit.com/swift/latest/Structs/AudioMixerSettings.html)
+#### [AudioMixerSettings](https://docs.haishinkit.com/swift/latest/documentation/haishinkit/audiomixersettings/)
 If you want to mix multiple audio tracks, please enable the feature flag.
 ```swift
 await mixer.setMultiTrackAudioMixingEnabled(true)
@@ -204,7 +204,7 @@ settings.tracks = [
 async mixer.setAudioMixerSettings(settings)
 ```
 
-#### [AudioCodecSettings](https://docs.haishinkit.com/swift/latest/Structs/AudioCodecSettings.html)
+#### [AudioCodecSettings](https://docs.haishinkit.com/swift/latest/documentation/haishinkit/audiocodecsettings/)
 ```swift
 var audioSettings = AudioCodecSettings()
 /// Specifies the bitRate of audio output.
@@ -218,7 +218,7 @@ await stream.setAudioSettings(audioSettings)
 ```
 
 ### 🎥 Video
-#### [Device](https://docs.haishinkit.com/swift/latest/Classes/VideoDeviceUnit.html)
+#### [Device](https://docs.haishinkit.com/swift/latest/documentation/haishinkit/videodeviceunit/)
 Specifies the video capture settings.
 ```swift
 
@@ -234,7 +234,7 @@ do {
 }
 ```
 
-#### [VideoMixerSettings](https://docs.haishinkit.com/swift/latest/Structs/VideoMixerSettings.html)
+#### [VideoMixerSettings](https://docs.haishinkit.com/swift/latest/documentation/haishinkit/videomixersettings/)
 ```swift
 var videoMixerSettings = VideoMixerSettings()
 /// Specifies the image rendering mode.
@@ -247,7 +247,7 @@ videoMixerSettings.mainTrack = 0
 await mixer.setVideoMixerSettings(videoMixerSettings)
 ```
 
-#### [VideoCodecSettings](https://docs.haishinkit.com/swift/latest/Structs/VideoCodecSettings.html)
+#### [VideoCodecSettings](https://docs.haishinkit.com/swift/latest/documentation/haishinkit/videocodecsettings/)
 ```swift
 var videoSettings = VideoCodecSettings(
   videoSize: .init(width: 854, height: 480),

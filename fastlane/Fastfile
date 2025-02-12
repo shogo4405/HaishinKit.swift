@@ -34,6 +34,27 @@ lane :review do
 end
 
 desc "Creates documents."
-lane :document do
-  sh('cd ../ && sourcekitten doc --spm --module-name HaishinKit > HaishinKit.json && sourcekitten doc --spm --module-name SRTHaishinKit > SRTHaishinKit.json && jazzy --sourcekitten-sourcefile HaishinKit.json,SRTHaishinKit.json')
+lane :document do |options|
+  if options[:version] == ""
+    UI.error("Version is a required argument!")
+    next
+  end
+
+  version = options[:version]
+
+  sh "rm -rf ../../docs.haishinkit.com/swift/#{version}"
+  sh <<COMMAND
+ swift package --allow-writing-to-directory ../../docs.haishinkit.com/ generate-documentation --hosting-base-path swift/#{version}\
+ --output-path ../../docs.haishinkit.com/swift/#{version}\
+ --transform-for-static-hosting\
+ --enable-experimental-combined-documentation 
+COMMAND
+
+  sh "rm -rf ../../docs.haishinkit.com/swift/latest"
+  sh <<COMMAND
+ swift package --allow-writing-to-directory ../../docs.haishinkit.com/ generate-documentation --hosting-base-path swift/latest\
+ --output-path ../../docs.haishinkit.com/swift/latest\
+ --transform-for-static-hosting\
+ --enable-experimental-combined-documentation  
+COMMAND
 end

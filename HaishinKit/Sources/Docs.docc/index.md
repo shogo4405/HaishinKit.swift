@@ -1,5 +1,16 @@
-# HaishinKit
-- This is the main module. It provides common functionality for live streaming and supports the RTMP protocol.
+# ``HaishinKit``
+
+## Overview
+This is the main module. It provides common functionality for live streaming and supports the RTMP protocol.
+
+### Module organization
+The HaishinKit project is split across multiple modules:
+
+Repo | Usage
+--|--
+[HaishinKit](https://docs.haishinkit.com/swift/latest/documentation/haishinkit/) | HaishinKit core
+[SRTHaishinKit](https://docs.haishinkit.com/swift/latest/documentation/srthaishinkit/) | SRT protocol support
+[MoQTHaishinKit](https://docs.haishinkit.com/swift/latest/documentation/moqthaishinkit/) | MoQT protocol support
 
 ## 📓 RTMP Usage
 ### Ingest

@@ -1,5 +1,7 @@
-# SRTHaishinKit
-- This module supports the SRT protocol. It is separated into its own module due to the large size of the wrapper library for libsrt.
+# ``SRTHaishinKit``
+
+## Overview
+This module supports the SRT protocol. It is separated into its own module due to the large size of the wrapper library for libsrt.
 
 ## libsrt.xcframework
 - This is a build of https://github.com/Haivision/srt as an xcframework.
