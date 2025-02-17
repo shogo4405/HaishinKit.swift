@@ -29,23 +29,25 @@ Project name    |Notes       |License
 
 ## 🎨 Features
 ### ✏️ [RTMP](HaishinKit/Sources/Docs.docc/index.md)
-- [x] Authentication
-- [x] Publish and Recording
+- [x] FMLE-compatible Authentication
+- [x] Ingest
+  - H264, HEVC, AAC and OPUS support.
 - [x] _Playback (Beta)_
-- [x] [Adaptive bitrate streaming](../../issues/1308)
+  - H264, HEVC and AAC support.
 - [ ] Action Message Format
   - [x] AMF0
   - [ ] AMF3
 - [x] SharedObject
 - [x] RTMPS
   - [x] Native (RTMP over SSL/TLS)
-- [x] ReplayKit Live as a Broadcast Upload Extension
-- [x] [Enhanced RTMP](https://github.com/veovera/enhanced-rtmp)
+- [x] [Enhanced RTMP](HaishinKit/Sources/Docs.docc/E-RTMP.md)
 
 ### ✏️ [SRT(beta)](SRTHaishinKit/Sources/Docs.docc/index.md)
-- [x] Publish and Recording (H264/HEVC/AAC)
-- [x] Playback(beta)
-- [ ] mode
+- Ingest
+  - H264, HEVC and AAC support.
+- Playback
+  - H264, HEVC and AAC support.
+- SRT Mode
   - [x] caller
   - [x] listener
   - [ ] rendezvous
