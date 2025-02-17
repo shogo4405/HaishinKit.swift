@@ -2,7 +2,7 @@
 This module supports the SRT protocol.
 
 ## Overview
-This is a module that supports SRT protocol. It internally uses a library that is built from libsrt and converted into an xcframework.
+This is a module that supports SRT protocol. It internally uses a library that is built from [libsrt](https://github.com/Haivision/srt) and converted into an xcframework.
 
 ## 🎨 Features
 - Ingest
