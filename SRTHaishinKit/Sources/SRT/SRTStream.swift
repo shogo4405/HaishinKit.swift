@@ -112,6 +112,10 @@ public actor SRTStream {
         readyState = .idle
     }
 
+    func connectedHandler() async {
+        await action?()
+    }
+
     func doInput(_ data: Data) {
         _ = reader.read(data)
     }

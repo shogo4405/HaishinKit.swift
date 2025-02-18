@@ -20,20 +20,39 @@ public actor SRTConnection: NetworkConnection {
     /// The URI passed to the SRTConnection.connect() method.
     public private(set) var uri: URL?
     /// This instance connect to server(true) or not(false)
-    @Published public private(set) var connected = false
-
-    private var mode: SRTMode = .caller
-    private var socket: SRTSocket?
-    private var streams: [SRTStream] = []
-    private var clients: [SRTSocket] = []
-    private var networkMonitor: NetworkMonitor?
-
+    @Published public private(set) var connected = false {
+        didSet {
+            guard let socket, connected else {
+                return
+            }
+            Task {
+                let networkMonitor = await socket.makeNetworkMonitor()
+                self.networkMonitor = networkMonitor
+                await networkMonitor.startRunning()
+                for await event in await networkMonitor.event {
+                    for stream in streams {
+                        await stream.dispatch(event)
+                    }
+                }
+            }
+            Task {
+                for stream in streams {
+                    await stream.connectedHandler()
+                }
+            }
+        }
+    }
     /// The SRT's performance data.
     public var performanceData: SRTPerformanceData? {
         get async {
             return await socket?.performanceData
         }
     }
+    private var mode: SRTMode = .caller
+    private var socket: SRTSocket?
+    private var streams: [SRTStream] = []
+    private var listener: SRTSocket?
+    private var networkMonitor: NetworkMonitor?
 
     /// Creates an object.
     public init() {
@@ -51,13 +70,12 @@ public actor SRTConnection: NetworkConnection {
             throw Error.unsupportedUri(uri)
         }
         do {
-            let options = SRTSocketOption.from(uri: uri)
-            let addr = sockaddr_in(mode.host(host), port: UInt16(port))
             let socket = SRTSocket()
-            self.socket = socket
             try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Swift.Error>) in
                 Task {
                     do {
+                        let options = SRTSocketOption.from(uri: uri)
+                        let addr = sockaddr_in(mode.host(host), port: UInt16(port))
                         try await socket.open(addr, mode: mode, options: options)
                         self.uri = uri
                         connected = await socket.status == SRTS_CONNECTED
@@ -67,27 +85,7 @@ public actor SRTConnection: NetworkConnection {
                     }
                 }
             }
-            self.mode = mode
-            switch mode {
-            case .caller:
-                Task {
-                    let networkMonitor = await socket.makeNetworkMonitor()
-                    self.networkMonitor = networkMonitor
-                    await networkMonitor.startRunning()
-                    for await event in await networkMonitor.event {
-                        for stream in streams {
-                            await stream.dispatch(event)
-                        }
-                    }
-                }
-            case .listener:
-                Task {
-                    for await client in await socket.accept {
-                        connected = true
-                        clients.append(client)
-                    }
-                }
-            }
+            setMode(mode, socket: socket)
         } catch {
             throw error
         }
@@ -99,25 +97,19 @@ public actor SRTConnection: NetworkConnection {
             throw Error.invalidState
         }
         await networkMonitor?.stopRunning()
-        for client in clients {
-            await client.close()
-        }
-        clients.removeAll()
         for stream in streams {
             await stream.close()
         }
         await socket?.close()
+        await listener?.close()
+        socket = nil
+        listener = nil
         connected = false
     }
 
     func send(_ data: Data) async {
         do {
-            switch mode {
-            case .caller:
-                try await socket?.send(data)
-            case .listener:
-                try? await clients.first?.send(data)
-            }
+            try await socket?.send(data)
         } catch {
             try? await close()
         }
@@ -125,21 +117,11 @@ public actor SRTConnection: NetworkConnection {
 
     func recv() {
         Task {
-            switch mode {
-            case .caller:
-                guard let socket else {
-                    return
-                }
-                for await data in await socket.inputs {
-                    await streams.first?.doInput(data)
-                }
-            case .listener:
-                guard let socket = clients.first else {
-                    return
-                }
-                for await data in await socket.inputs {
-                    await streams.first?.doInput(data)
-                }
+            guard let socket else {
+                return
+            }
+            for await data in await socket.inputs {
+                await streams.first?.doInput(data)
             }
         }
     }
@@ -154,6 +136,22 @@ public actor SRTConnection: NetworkConnection {
     func removeStream(_ stream: SRTStream) {
         if let index = streams.firstIndex(where: { $0 === stream }) {
             streams.remove(at: index)
+        }
+    }
+
+    private func setMode(_ mode: SRTMode, socket: SRTSocket) {
+        switch mode {
+        case .caller:
+            self.socket = socket
+        case .listener:
+            listener = socket
+            Task {
+                for await accept in await socket.accept {
+                    self.socket = accept
+                    listener = nil
+                    connected = true
+                }
+            }
         }
     }
 

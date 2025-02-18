@@ -72,7 +72,7 @@ final actor HKStreamSwitcher {
                 return
             }
             do {
-                try await connection.open(URL(string: preference.uri ?? ""))
+                try await connection.open(URL(string: preference.uri ?? ""), mode: .listener)
                 switch method {
                 case .playback:
                     await stream.play()

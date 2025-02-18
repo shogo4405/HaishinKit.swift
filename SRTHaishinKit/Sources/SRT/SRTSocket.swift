@@ -46,9 +46,9 @@ final actor SRTSocket {
     var performanceData: SRTPerformanceData {
         return .init(mon: perf)
     }
-    private(set) var mode: SRTMode = .caller
-    private(set) var perf: CBytePerfMon = .init()
-    private(set) var socket: SRTSOCKET = SRT_INVALID_SOCK
+
+    private var perf: CBytePerfMon = .init()
+    private var socket: SRTSOCKET = SRT_INVALID_SOCK
     private(set) var status: SRT_SOCKSTATUS = SRTS_INIT {
         didSet {
             guard status != oldValue else {
@@ -81,7 +81,7 @@ final actor SRTSocket {
         }
     }
 
-    private(set) var options: [SRTSocketOption: any Sendable] = [:]
+    private var options: [SRTSocketOption: any Sendable] = [:]
     private var outputs: AsyncStream<Data>.Continuation? {
         didSet {
             oldValue?.finish()
@@ -115,7 +115,6 @@ final actor SRTSocket {
         guard socket == SRT_INVALID_SOCK else {
             return
         }
-        self.mode = mode
         // prepare socket
         socket = srt_create_socket()
         if socket == SRT_INVALID_SOCK {
@@ -173,13 +172,12 @@ final actor SRTSocket {
         }
     }
 
-    func configure(_ binding: SRTSocketOption.Binding) -> Bool {
-        let failures = SRTSocketOption.configure(socket, binding: binding, options: options)
-        guard failures.isEmpty else {
-            logger.error(failures)
-            return false
-        }
-        return true
+    func getOption(_ option: SRTSocketOption) throws -> String? {
+        return String(data: try option.getOption(socket), encoding: .ascii)
+    }
+
+    private func getOption(_ option: SRTSocketOption) throws -> Data {
+        return try option.getOption(socket)
     }
 
     private func bstats() -> Int32 {
@@ -187,6 +185,15 @@ final actor SRTSocket {
             return SRT_ERROR
         }
         return srt_bstats(socket, &perf, 1)
+    }
+
+    private func configure(_ binding: SRTSocketOption.Binding) -> Bool {
+        let failures = SRTSocketOption.configure(socket, binding: binding, options: options)
+        guard failures.isEmpty else {
+            logger.error(failures)
+            return false
+        }
+        return true
     }
 
     private func didConnected() {
@@ -243,8 +250,8 @@ extension SRTSocket: NetworkTransportReporter {
         let performanceData = self.performanceData
         return .init(
             queueBytesOut: Int(performanceData.byteSndBuf),
-            totalBytesIn: Int(performanceData.byteSentTotal),
-            totalBytesOut: Int(performanceData.byteRecvTotal)
+            totalBytesIn: Int(performanceData.byteRecvTotal),
+            totalBytesOut: Int(performanceData.byteSentTotal)
         )
     }
 
