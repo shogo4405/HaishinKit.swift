@@ -46,9 +46,10 @@ final actor SRTSocket {
     var performanceData: SRTPerformanceData {
         return .init(mon: perf)
     }
-    private(set) var mode: SRTMode = .caller
-    private(set) var perf: CBytePerfMon = .init()
-    private(set) var socket: SRTSOCKET = SRT_INVALID_SOCK
+
+    private var mode: SRTMode = .caller
+    private var perf: CBytePerfMon = .init()
+    private var socket: SRTSOCKET = SRT_INVALID_SOCK
     private(set) var status: SRT_SOCKSTATUS = SRTS_INIT {
         didSet {
             guard status != oldValue else {
@@ -81,7 +82,7 @@ final actor SRTSocket {
         }
     }
 
-    private(set) var options: [SRTSocketOption: any Sendable] = [:]
+    private var options: [SRTSocketOption: any Sendable] = [:]
     private var outputs: AsyncStream<Data>.Continuation? {
         didSet {
             oldValue?.finish()
@@ -173,7 +174,7 @@ final actor SRTSocket {
         }
     }
 
-    func configure(_ binding: SRTSocketOption.Binding) -> Bool {
+    private func configure(_ binding: SRTSocketOption.Binding) -> Bool {
         let failures = SRTSocketOption.configure(socket, binding: binding, options: options)
         guard failures.isEmpty else {
             logger.error(failures)
@@ -243,8 +244,8 @@ extension SRTSocket: NetworkTransportReporter {
         let performanceData = self.performanceData
         return .init(
             queueBytesOut: Int(performanceData.byteSndBuf),
-            totalBytesIn: Int(performanceData.byteSentTotal),
-            totalBytesOut: Int(performanceData.byteRecvTotal)
+            totalBytesIn: Int(performanceData.byteRecvTotal),
+            totalBytesOut: Int(performanceData.byteSentTotal)
         )
     }
 
