@@ -60,7 +60,7 @@ public actor SRTConnection: NetworkConnection {
                     do {
                         try await socket.open(addr, mode: mode, options: options)
                         self.uri = uri
-                        connected = await socket.status == SRTS_CONNECTED
+                        connected = await socket.status == .connected
                         continuation.resume()
                     } catch {
                         continuation.resume(throwing: error)
@@ -100,13 +100,13 @@ public actor SRTConnection: NetworkConnection {
         }
         await networkMonitor?.stopRunning()
         for client in clients {
-            await client.close()
+            await client.stopRunning()
         }
         clients.removeAll()
         for stream in streams {
             await stream.close()
         }
-        await socket?.close()
+        await socket?.stopRunning()
         connected = false
     }
 
