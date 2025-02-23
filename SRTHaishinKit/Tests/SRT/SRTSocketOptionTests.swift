@@ -59,6 +59,7 @@ import libsrt
         #expect(SRTSocketOption.getMode(uri: URL(string: "srt://192.168.1.1:9000?mode=client")) == SRTMode.caller)
         #expect(SRTSocketOption.getMode(uri: URL(string: "srt://192.168.1.1:9000?mode=listener")) == SRTMode.listener)
         #expect(SRTSocketOption.getMode(uri: URL(string: "srt://192.168.1.1:9000?mode=server")) == SRTMode.listener)
+        #expect(SRTSocketOption.getMode(uri: URL(string: "srt://192.168.1.1:9000")) == SRTMode.caller)
         #expect(SRTSocketOption.getMode(uri: URL(string: "srt://:9000")) == SRTMode.listener)
     }
 }

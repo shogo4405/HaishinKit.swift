@@ -25,10 +25,10 @@ public actor SRTConnection: NetworkConnection {
 
     private var socket: SRTSocket? {
         didSet {
-            guard let socket else {
-                return
-            }
             Task {
+                guard let socket else {
+                    return
+                }
                 let networkMonitor = await socket.makeNetworkMonitor()
                 self.networkMonitor = networkMonitor
                 await networkMonitor.startRunning()
@@ -38,10 +38,19 @@ public actor SRTConnection: NetworkConnection {
                     }
                 }
             }
+            Task {
+                await oldValue?.stopRunning()
+            }
         }
     }
     private var streams: [SRTStream] = []
-    private var listener: SRTSocket?
+    private var listener: SRTSocket? {
+        didSet {
+            Task {
+                await oldValue?.stopRunning()
+            }
+        }
+    }
     private var networkMonitor: NetworkMonitor?
 
     /// The SRT's performance data.
@@ -64,20 +73,32 @@ public actor SRTConnection: NetworkConnection {
     /// Open a two-way connection to an application on SRT Server.
     @available(*, deprecated, renamed: "connect")
     public func open(_ uri: URL?, mode: SRTMode = .caller) async throws {
-        try await connect(uri.appending(queryItems: [.init(name: "mode", value: mode.rawValue)]))
+        if uri?.absoluteString.contains("mode=") == true {
+            try await connect(uri)
+        } else {
+            if let uri {
+                if uri.absoluteString.contains("?") {
+                    try await connect(URL(string: uri.absoluteString + "&mode=" + mode.rawValue))
+                } else {
+                    try await connect(URL(string: uri.absoluteString + "?mode=" + mode.rawValue))
+                }
+            } else {
+                try await connect(uri)
+            }
+        }
     }
 
     /// Creates a connection to the server or waits for an incoming connection.
     ///
     /// - Parameters:
-    ///   - url: You can specify connection options in the URL. This follows the standard SRT format.
+    ///   - uri: You can specify connection options in the URL. This follows the standard SRT format.
     ///
     /// - srt://192.168.1.1:9000?mode=caller
     ///   - Connect to the specified server.
     /// - srt://:9000?mode=listener
     ///   - Wait for connections as a server.
-    public func connect(_ url: URL?) async throws {
-        guard let uri = uri, let scheme = uri.scheme, let host = uri.host, let port = uri.port, scheme == "srt" else {
+    public func connect(_ uri: URL?) async throws {
+        guard let uri, let scheme = uri.scheme, let host = uri.host, let port = uri.port, scheme == "srt" else {
             throw Error.unsupportedUri(uri)
         }
         guard let mode = SRTSocketOption.getMode(uri: uri) else {
@@ -105,17 +126,18 @@ public actor SRTConnection: NetworkConnection {
         }
     }
 
-    /// Closes the connection from the server.
-    public func close() async throws {
-        guard connected else {
-            throw Error.invalidState
+    /// Closes a connection.
+    public func close() async {
+        guard uri != nil else {
+            return
         }
-        await networkMonitor?.stopRunning()
+        networkMonitor = nil
         for stream in streams {
             await stream.close()
         }
-        await socket?.stopRunning()
-        await listener?.stopRunning()
+        socket = nil
+        listener = nil
+        uri = nil
         connected = false
     }
 
@@ -123,7 +145,7 @@ public actor SRTConnection: NetworkConnection {
         do {
             try await socket?.send(data)
         } catch {
-            try? await close()
+            await close()
         }
     }
 
@@ -151,6 +173,21 @@ public actor SRTConnection: NetworkConnection {
         }
     }
 
+    func acceptSocket() async {
+        guard let listener else {
+            return
+        }
+        do {
+            socket = try await listener.accept()
+            // It is a one-by-one connection and stops once the first connection is established.
+            self.listener = nil
+            connected = true
+        } catch {
+            logger.error(error)
+            await acceptSocket()
+        }
+    }
+
     private func setMode(_ mode: SRTMode, socket: SRTSocket) {
         switch mode {
         case .caller:
@@ -158,12 +195,7 @@ public actor SRTConnection: NetworkConnection {
         case .listener:
             listener = socket
             Task {
-                for await accept in await socket.accept {
-                    self.socket = accept
-                    await listener?.stopRunning()
-                    listener = nil
-                    connected = true
-                }
+                await acceptSocket()
             }
         }
     }

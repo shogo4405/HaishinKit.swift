@@ -80,7 +80,7 @@ enum SRTSocketOption: String, Sendable {
             if uri.host?.isEmpty == true {
                 return .listener
             }
-            return nil
+            return .caller
         }
     }
 
