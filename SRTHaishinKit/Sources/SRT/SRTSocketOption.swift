@@ -63,6 +63,27 @@ enum SRTSocketOption: String, Sendable {
         return paramsReturn
     }
 
+    static func getMode(uri: URL?) -> SRTMode? {
+        guard let uri else {
+            return nil
+        }
+        let queryItems = getQueryItems(uri: uri)
+        switch queryItems["mode"] {
+        case "client", "caller":
+            return .caller
+        case "server", "listener":
+            return .listener
+        case "rendezvous":
+            // not supported.
+            return nil
+        default:
+            if uri.host?.isEmpty == true {
+                return .listener
+            }
+            return nil
+        }
+    }
+
     enum `Type`: Int {
         case string
         case int

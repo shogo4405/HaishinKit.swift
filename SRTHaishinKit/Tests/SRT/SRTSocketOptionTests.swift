@@ -53,4 +53,12 @@ import libsrt
          #expect(try SRTSocketOption.transtype.getOption(socket) == Data(bytes: &result, count: MemoryLayout<Int32>.size))
          */
     }
+
+    @Test func mode() throws {
+        #expect(SRTSocketOption.getMode(uri: URL(string: "srt://192.168.1.1:9000?mode=caller")) == SRTMode.caller)
+        #expect(SRTSocketOption.getMode(uri: URL(string: "srt://192.168.1.1:9000?mode=client")) == SRTMode.caller)
+        #expect(SRTSocketOption.getMode(uri: URL(string: "srt://192.168.1.1:9000?mode=listener")) == SRTMode.listener)
+        #expect(SRTSocketOption.getMode(uri: URL(string: "srt://192.168.1.1:9000?mode=server")) == SRTMode.listener)
+        #expect(SRTSocketOption.getMode(uri: URL(string: "srt://:9000")) == SRTMode.listener)
+    }
 }
