@@ -72,22 +72,6 @@ final actor SRTSocket {
         }
     }
 
-    var accept: AsyncStream<SRTSocket> {
-        AsyncStream<SRTSocket> { continuation in
-            Task.detached {
-                repeat {
-                    do {
-                        let client = try await self.accept()
-                        continuation.yield(client)
-                        try await Task.sleep(nanoseconds: 1_000_000_000)
-                    } catch {
-                        continuation.finish()
-                    }
-                } while await self.connected
-            }
-        }
-    }
-
     var performanceData: SRTPerformanceData {
         .init(mon: perf)
     }
@@ -122,10 +106,9 @@ final actor SRTSocket {
         if incomingBuffer.count < windowSizeC {
             incomingBuffer = .init(count: Int(windowSizeC))
         }
-        await startRunning()
     }
 
-    func open(_ addr: sockaddr_in, mode: SRTMode, options: [SRTSocketOption: any Sendable] = [:]) throws {
+    func open(_ addr: sockaddr_in, mode: SRTMode, options: [SRTSocketOption: any Sendable] = [:]) async throws {
         guard socket == SRT_INVALID_SOCK else {
             return
         }
@@ -163,6 +146,25 @@ final actor SRTSocket {
                 throw makeSocketError()
             }
         }
+        await startRunning()
+    }
+
+    func accept() async throws -> SRTSocket {
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<SRTSocket, Swift.Error>) in
+            Task.detached { [self] in
+                do {
+                    let accept = srt_accept(await socket, nil, nil)
+                    guard -1 < accept else {
+                        throw await makeSocketError()
+                    }
+                    let socket = try await SRTSocket(socket: accept)
+                    await socket.startRunning()
+                    continuation.resume(returning: socket)
+                } catch {
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
     }
 
     func send(_ data: Data) throws {
@@ -172,6 +174,14 @@ final actor SRTSocket {
         for data in data.chunk(Self.payloadSize) {
             outputs?.yield(data)
         }
+    }
+
+    func getOption(_ option: SRTSocketOption) throws -> String? {
+        return String(data: try option.getOption(socket), encoding: .ascii)
+    }
+
+    private func getOption(_ option: SRTSocketOption) throws -> Data {
+        return try option.getOption(socket)
     }
 
     private func configure(_ binding: SRTSocketOption.Binding) -> Bool {
@@ -196,11 +206,6 @@ final actor SRTSocket {
             logger.error(error_message)
         }
         return .illegalState(message: error_message)
-    }
-
-    private func accept() async throws -> SRTSocket {
-        let accept = srt_accept(socket, nil, nil)
-        return try await SRTSocket(socket: accept)
     }
 
     @inline(__always)
