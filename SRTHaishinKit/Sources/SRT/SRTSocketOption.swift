@@ -2,11 +2,18 @@ import Foundation
 import libsrt
 
 enum SRTSocketOption: String, Sendable {
-    private static let boolStringLiterals: [String: Bool] = [
+    private static let trueStringLiterals: [String: Bool] = [
         "1": true,
         "on": true,
         "yes": true,
         "true": true
+    ]
+
+    private static let falseStringLiterals: [String: Bool] = [
+        "0": false,
+        "off": false,
+        "no": false,
+        "false": false
     ]
 
     static func from(uri: URL?) -> [SRTSocketOption: any Sendable] {
@@ -28,9 +35,15 @@ enum SRTSocketOption: String, Sendable {
                 options[option] = Int(item.value)
             case .bool:
                 let key = String(describing: item.value).lowercased()
-                options[option] = boolStringLiterals[key] ?? false
+                if let bool = trueStringLiterals[key] {
+                    options[option] = bool
+                } else if let bool = falseStringLiterals[key] {
+                    options[option] = bool
+                }
             case .enumeration:
-                break
+                if let value = Transtype(rawValue: item.value.lowercased()) {
+                    options[option] = value.cValue
+                }
             }
         }
         return options
@@ -440,11 +453,25 @@ enum SRTSocketOption: String, Sendable {
         switch self {
         case .transtype:
             return [
-                "live": Int32(SRTT_LIVE.rawValue),
-                "file": Int32(SRTT_FILE.rawValue)
+                "live": SRTT_LIVE,
+                "file": SRTT_FILE
             ]
         default:
             return nil
+        }
+    }
+
+    enum Transtype: String {
+        case live
+        case file
+
+        var cValue: SRT_TRANSTYPE {
+            switch self {
+            case .live:
+                return SRTT_LIVE
+            case .file:
+                return SRTT_FILE
+            }
         }
     }
 
@@ -500,12 +527,10 @@ enum SRTSocketOption: String, Sendable {
         case .enumeration:
             switch self {
             case .transtype:
-                guard
-                    let key = value as? String,
-                    var value = valmap?[key] as? Int32 else {
+                guard var value = value as? SRT_TRANSTYPE else {
                     return nil
                 }
-                return .init(bytes: &value, count: MemoryLayout.size(ofValue: value))
+                return .init(bytes: &value.rawValue, count: MemoryLayout.size(ofValue: value.rawValue))
             default:
                 return nil
             }

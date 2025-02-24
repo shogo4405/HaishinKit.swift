@@ -20,7 +20,7 @@ import libsrt
         try await listener.connect(URL(string: "srt://:10001?streamid=test&passphrase=a546994dbf25a0823f0cbadff9cc5088k9e7c2027e8e40933a04ef574bc61cd4a"))
         let connection1 = SRTConnection()
         await #expect(throws: SRTError.self) {
-                try await connection1.connect(URL(string: "srt://127.0.0.1:10001?streamid=test2&passphrase=a546994dbf25a0823f0cbadff9cc5088k9e7c2027e8e40933a04ef574bc61cd4"))
+            try await connection1.connect(URL(string: "srt://127.0.0.1:10001?streamid=test2&passphrase=a546994dbf25a0823f0cbadff9cc5088k9e7c2027e8e40933a04ef574bc61cd4"))
         }
         let connection2 = SRTConnection()
         try await connection2.connect(URL(string: "srt://127.0.0.1:10001?streamid=test&passphrase=a546994dbf25a0823f0cbadff9cc5088k9e7c2027e8e40933a04ef574bc61cd4a"))
