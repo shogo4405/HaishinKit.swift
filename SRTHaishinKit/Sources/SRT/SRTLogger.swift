@@ -29,6 +29,7 @@ public enum SRTLogLevel: Sendable {
     }
 }
 
+/// Constants that indicate the addition to levels the logging system has functional areas .
 public enum SRTLogFunctionalArea: Int32, Sendable {
     /// General uncategorized log, for serious issues only
     case general = 0
@@ -96,16 +97,17 @@ public enum SRTLogFunctionalArea: Int32, Sendable {
     }
 }
 
-///  An object for writing interpolated string messages to srt logging system.
-public struct SRTLogger: Sendable {
+/// An actor for writing interpolated string messages to srt logging system.
+public actor SRTLogger {
+    /// The singleton logger instance.
     public static let shared = SRTLogger()
 
     private init() {
         srt_setloglevel(level.value)
     }
 
-    /// Specifies the current logging level.
-    public var level: SRTLogLevel = .notice {
+    /// The current logging level.
+    public private(set) var level: SRTLogLevel = .notice {
         didSet {
             guard level != oldValue else {
                 return
@@ -114,8 +116,8 @@ public struct SRTLogger: Sendable {
         }
     }
 
-    /// Specifies the current logging functional areas.
-    public var functionalAreas: Set<SRTLogFunctionalArea> = [] {
+    /// The current logging functional areas.
+    public private(set) var functionalAreas: Set<SRTLogFunctionalArea> = [] {
         didSet {
             for area in oldValue.subtracting(functionalAreas) {
                 area.delLogFA()
@@ -124,5 +126,15 @@ public struct SRTLogger: Sendable {
                 area.addLogFA()
             }
         }
+    }
+
+    /// Sets the current logging level.
+    public func setLavel(_ level: SRTLogLevel) {
+        self.level = level
+    }
+
+    /// Sets the current logging functional areas.
+    public func setFunctionalAreas(_ functionalAreas: Set<SRTLogFunctionalArea>) {
+        self.functionalAreas = functionalAreas
     }
 }
