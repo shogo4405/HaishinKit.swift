@@ -176,14 +176,6 @@ final actor SRTSocket {
         }
     }
 
-    func getOption(_ option: SRTSocketOption) throws -> String? {
-        return String(data: try option.getOption(socket), encoding: .ascii)
-    }
-
-    private func getOption(_ option: SRTSocketOption) throws -> Data {
-        return try option.getOption(socket)
-    }
-
     private func configure(_ binding: SRTSocketOption.Binding) -> Bool {
         let failures = SRTSocketOption.configure(socket, binding: binding, options: options)
         guard failures.isEmpty else {
