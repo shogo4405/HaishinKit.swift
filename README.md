@@ -1,9 +1,9 @@
 # HaishinKit for iOS, macOS, tvOS, visionOS and [Android](https://github.com/shogo4405/HaishinKit.kt).
-[![GitHub Stars](https://img.shields.io/github/stars/shogo4405/HaishinKit.swift?style=social)](https://github.com/shogo4405/HaishinKit.swift/stargazers)
-[![Release](https://img.shields.io/github/v/release/shogo4405/HaishinKit.swift)](https://github.com/shogo4405/HaishinKit.swift/releases/latest)
-[![Platform Compatibility](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fshogo4405%2FHaishinKit.swift%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/shogo4405/HaishinKit.swift)
-[![Swift Compatibility](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fshogo4405%2FHaishinKit.swift%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/shogo4405/HaishinKit.swift)
-[![GitHub license](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://raw.githubusercontent.com/shogo4405/HaishinKit.swift/master/LICENSE.md)
+[![GitHub Stars](https://img.shields.io/github/stars/HaishinKit/HaishinKit.swift?style=social)](https://github.com/HaishinKit/HaishinKit.swift/stargazers)
+[![Release](https://img.shields.io/github/v/release/HaishinKit/HaishinKit.swift)](https://github.com/HaishinKit/HaishinKit.swift/releases/latest)
+[![Platform Compatibility](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FHaishinKit%2FHaishinKit.swift%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/HaishinKit/HaishinKit.swift)
+[![Swift Compatibility](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FHaishinKit%2FHaishinKit.swift%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/HaishinKit/HaishinKit.swift)
+[![GitHub license](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://raw.githubusercontent.com/HaishinKit/HaishinKit.swift/master/LICENSE.md)
 [![GitHub Sponsor](https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&color=ff69b4)](https://github.com/sponsors/shogo4405)
 
 * Camera and Microphone streaming library via RTMP and SRT for iOS, macOS, tvOS and visionOS.
@@ -16,7 +16,7 @@ Do you need additional support? Technical support on Issues and Discussions is p
 Sponsor: [$50 per month](https://github.com/sponsors/shogo4405): Technical support via GitHub Issues/Discussions with priority response.
 
 ## 💬 Communication
-* GitHub Issues and Discussions are open spaces for communication among users and are available to everyone as long as [the code of conduct](https://github.com/shogo4405/HaishinKit.swift?tab=coc-ov-file) is followed.
+* GitHub Issues and Discussions are open spaces for communication among users and are available to everyone as long as [the code of conduct](https://github.com/HaishinKit/HaishinKit.swift?tab=coc-ov-file) is followed.
 * Whether someone is a contributor to HaishinKit is mainly determined by their GitHub profile icon. If you are using the default icon, there is a chance your input might be overlooked, so please consider setting a custom one. It could be a picture of your pet, for example. Personally, I like cats.
 * If you want to support e-mail based communication without GitHub.
   * Consulting fee is [$50](https://www.paypal.me/shogo4405/50USD)/1 incident. I'm able to response a few days.
@@ -24,8 +24,8 @@ Sponsor: [$50 per month](https://github.com/sponsors/shogo4405): Technical suppo
 ## 🌏 Related projects
 Project name    |Notes       |License
 ----------------|------------|--------------
-[HaishinKit for Android.](https://github.com/shogo4405/HaishinKit.kt)|Camera and Microphone streaming library via RTMP for Android.|[BSD 3-Clause "New" or "Revised" License](https://github.com/shogo4405/HaishinKit.kt/blob/master/LICENSE.md)
-[HaishinKit for Flutter.](https://github.com/shogo4405/HaishinKit.dart)|Camera and Microphone streaming library via RTMP for Flutter.|[BSD 3-Clause "New" or "Revised" License](https://github.com/shogo4405/HaishinKit.dart/blob/master/LICENSE.md)
+[HaishinKit for Android.](https://github.com/HaishinKit/HaishinKit.kt)|Camera and Microphone streaming library via RTMP for Android.|[BSD 3-Clause "New" or "Revised" License](https://github.com/HaishinKit/HaishinKit.kt/blob/master/LICENSE.md)
+[HaishinKit for Flutter.](https://github.com/HaishinKit/HaishinKit.dart)|Camera and Microphone streaming library via RTMP for Flutter.|[BSD 3-Clause "New" or "Revised" License](https://github.com/HaishinKit/HaishinKit.dart/blob/master/LICENSE.md)
 
 ## 🎨 Features
 ### ✏️ [RTMP](HaishinKit/Sources/Docs.docc/index.md)
@@ -81,7 +81,7 @@ Through off-screen rendering capabilities, it is possible to display any text or
 |<img width="961" alt="" src="https://github.com/user-attachments/assets/aaf6c06f-d2de-43c1-a435-90907f370977">|<img width="849" alt="" src="https://github.com/user-attachments/assets/0a07b418-aa56-41cb-8e6d-e12596b25ae8">|
 
 ### Rendering
-|Features|[PiPHKView](https://shogo4405.github.io/HaishinKit.swift/Classes/PiPHKView.html)|[MTHKView](https://shogo4405.github.io/HaishinKit.swift/Classes/MTHKView.html)|
+|Features|[PiPHKView](https://docs.haishinkit.com/swift/latest/documentation/haishinkit/piphkview/)|[MTHKView](https://docs.haishinkit.com/swift/latest/documentation/haishinkit/mthkview/)|
 |-|:---:|:---:|
 |Engine|AVSampleBufferDisplayLayer|Metal|
 |Publish|✔|✔|
@@ -103,9 +103,9 @@ Examples project are available for iOS, macOS(ARM), tvOS and visionOS.
 
 ### Usage
 You can verify by changing the URL of the following file.
-https://github.com/shogo4405/HaishinKit.swift/blob/abf1883d25d0ba29e1d1d67ea9e3a3b5be61a196/Examples/Preference.swift#L1-L7
+https://github.com/HaishinKit/HaishinKit.swift/blob/abf1883d25d0ba29e1d1d67ea9e3a3b5be61a196/Examples/Preference.swift#L1-L7
 ```sh
-git clone https://github.com/shogo4405/HaishinKit.swift.git
+git clone https://github.com/HaishinKit/HaishinKit.swift.git
 cd HaishinKit.swift
 open Examples/Examples.xcodeproj
 ```
@@ -142,8 +142,8 @@ Please contains Info.plist.
 ## 🔧 Installation
 * Using Swift Package Manager
   - https://github.com/shogo4405/HaishinKit.swift
-* [Discontinued support for CocoaPods.](https://github.com/shogo4405/HaishinKit.swift/discussions/1672)
-* [Discontinued support for Carthage.](https://github.com/shogo4405/HaishinKit.swift/pull/1543)
+* [Discontinued support for CocoaPods.](https://github.com/HaishinKit/HaishinKit.swift/discussions/1672)
+* [Discontinued support for Carthage.](https://github.com/HaishinKit/HaishinKit.swift/pull/1543)
 
 ## 📓 Settings
 ### 🔧 Prerequisites
