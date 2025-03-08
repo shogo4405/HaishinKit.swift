@@ -15,6 +15,12 @@ This is a module that supports SRT protocol. It internally uses a library that i
   - [ ] rendezvous
 
 ## 📓 Usage
+### SRT Logging
+- Defining a Swift wrapper method for `srt_setloglevel`.
+```swift
+await SRTLogger.shared.setLevel(.debug)
+```
+
 ### Ingest
 ```swift
 let mixer = MediaMixer()

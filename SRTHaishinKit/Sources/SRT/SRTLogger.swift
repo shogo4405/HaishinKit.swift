@@ -129,7 +129,7 @@ public actor SRTLogger {
     }
 
     /// Sets the current logging level.
-    public func setLavel(_ level: SRTLogLevel) {
+    public func setLevel(_ level: SRTLogLevel) {
         self.level = level
     }
 

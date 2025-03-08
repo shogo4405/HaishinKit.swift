@@ -74,8 +74,9 @@ public actor SRTStream {
     }
 
     /// Playback streaming audio and video from server.
+    /// 
     /// - Warning: As a prerequisite, SRTConnection must be connected. In the future, an exception will be thrown.
-    public func play(_ name: String? = "") async throws {
+    public func play(_ name: String? = "") async {
         guard let connection, await connection.connected else {
             return
         }
