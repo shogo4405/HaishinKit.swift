@@ -23,9 +23,14 @@ public actor SRTConnection: NetworkConnection {
     /// This instance connect to server(true) or not(false)
     @Published public private(set) var connected = false
 
+    private var tasks = Set<Task<Void, Never>>()
+    
     private var socket: SRTSocket? {
         didSet {
-            Task {
+            tasks.forEach { $0.cancel() }
+            tasks.removeAll()
+            
+            let monitor = Task {
                 guard let socket else {
                     return
                 }
@@ -38,6 +43,9 @@ public actor SRTConnection: NetworkConnection {
                     }
                 }
             }
+            
+            tasks.insert(monitor)
+            
             Task {
                 await oldValue?.stopRunning()
             }
@@ -68,6 +76,7 @@ public actor SRTConnection: NetworkConnection {
     deinit {
         streams.removeAll()
         srt_cleanup()
+        print("⚔️ deinit -> \(String(describing: self))")
     }
 
     /// Open a two-way connection to an application on SRT Server.

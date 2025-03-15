@@ -219,6 +219,10 @@ final actor SRTSocket {
             return srt_recvmsg(socket, buffer, windowSizeC)
         }
     }
+    
+    deinit {
+        print("⚔️ deinit -> \(String(describing: self))")
+    }
 }
 
 extension SRTSocket: AsyncRunner {
