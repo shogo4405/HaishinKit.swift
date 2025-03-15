@@ -16,7 +16,8 @@ public actor SRTStream {
     private lazy var incoming = HKIncomingStream(self)
     private lazy var outgoing = HKOutgoingStream()
     private weak var connection: SRTConnection?
-
+    private var tasks = Set<Task<Void, Never>>()
+    
     /// Creates a new stream object.
     public init(connection: SRTConnection) {
         self.connection = connection
@@ -25,6 +26,7 @@ public actor SRTStream {
 
     deinit {
         outputs.removeAll()
+        print("⚔️ deinit -> \(String(describing: self))")
     }
 
     /// Sends streaming audio and video from client.
@@ -51,26 +53,39 @@ public actor SRTStream {
         if outgoing.audioInputFormat != nil {
             writer.expectedMedias.insert(.audio)
         }
-        Task {
+        
+        tasks.forEach { $0.cancel() }
+        tasks.removeAll()
+        
+        let videoOutput = Task {
             for await buffer in outgoing.videoOutputStream {
                 append(buffer)
             }
         }
-        Task {
+        
+        tasks.insert(videoOutput)
+        
+        let audioOutput = Task {
             for await buffer in outgoing.audioOutputStream {
                 append(buffer.0, when: buffer.1)
             }
         }
-        Task {
+        
+        tasks.insert(audioOutput)
+        
+        let videoInput = Task {
             for await buffer in outgoing.videoInputStream {
                 outgoing.append(video: buffer)
             }
         }
-        Task {
+        
+        tasks.insert(videoInput)
+        let output = Task {
             for await data in writer.output {
                 await connection.send(data)
             }
         }
+        tasks.insert(output)
     }
 
     /// Playback streaming audio and video from server.
@@ -104,10 +119,14 @@ public actor SRTStream {
         guard readyState != .idle else {
             return
         }
+        
         writer.clear()
         reader.clear()
         outgoing.stopRunning()
         Task { await incoming.stopRunning() }
+        
+        tasks.forEach { $0.cancel() }
+        tasks.removeAll()
         readyState = .idle
     }
 
